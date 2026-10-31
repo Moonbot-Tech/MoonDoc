@@ -1,0 +1,6 @@
+# Internal materials and drafts that are not published to the GitHub repository
+/materials/
+/cases/
+/audits-Codex/
+__pycache__/
+*.pyc

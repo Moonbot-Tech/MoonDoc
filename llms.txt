@@ -1,0 +1,59 @@
+# Moonbot — documentation on scalping, trading algorithms and strategy parameters (v7.71, FVersion=12)
+
+> The official knowledge base of the Moonbot trading terminal (https://moonbot.pro). It contains a conceptual description of the scalping and autotrading algorithms, ready-made strategy templates in the `##Begin_Strategy ... ##End_Strategy` format and a complete technical reference of 484 parameters.
+
+## Mandatory rules for generating and checking strategies
+
+Before composing or analyzing a strategy, read these three documents:
+- [AI guide and default values (AI_GUIDE.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/AI_GUIDE.md): the mandatory structure of the `##Begin_Strategy ... ##End_Strategy` block, dangerous defaults when lines are omitted, and the verification checklist.
+- [Strategy type selection guide by task (strategy-selection-guide.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/strategy-selection-guide.md): the table “Trading task → Which SignalType to choose → Meaning · Parameters · Template” and an overview of all 23 `SignalType` values.
+- [Common configuration mistakes and traps (silent-killers-and-traps.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/silent-killers-and-traps.md): incompatible parameter combinations across tabs and how to diagnose them.
+
+## Parameter reference by tab (484 parameters, FVersion=12)
+
+For a targeted parameter lookup, load only the thematic section you need instead of the whole base:
+- [Alphabetical tabular index of all 484 parameters (index.tsv)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/index.tsv): `ParamName`, `Tab`, `Type`, `Default`, `File`, `ShortMeaning`. Parameter names are case-sensitive (`buyPrice`, not `BuyPrice`).
+- [Overview of parameter interaction by trade phase (parameters-by-lifecycle.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/parameters-by-lifecycle.md): the `Requires / Overrides / Disabled by` matrix.
+- [01. Coin lists and market selection filters (01-filters-and-coins.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/01-filters-and-coins.md): `CoinsWhiteList`, `DynWL/DynBL`, `Ignore*`, `CustomEMA`, `Volume`, `Delta`, `Price`, `Time`, `Ping`.
+- [02. Detect algorithm parameters by strategy type (02-detectors-and-signals.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/02-detectors-and-signals.md): separate sections for `MoonShot`, `MoonHook`, `UseHookStrategy`, `MoonStrike`, `Spread`, `Pumps`, `Drops`, `Walls`, `WallsDetection`, `Activity`, `Volumes`, `Waves`, `Delta`, `Liquidations`, `Combo`, `TopMarket`, `Watcher`.
+- [03. Buy conditions and volatility modifiers (03-buy-and-modifiers.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/03-buy-and-modifiers.md): the `Buy` and `Delta Modifiers` tabs (`Add*Delta`, `DetectModifier`, `BuyModifier`, `SellModifier`, `StopLossModifier`).
+- [04. Order grids and joining take-profits (04-multiorders-and-scales.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/04-multiorders-and-scales.md): the `MultiOrders` tab (`OrdersCount`, `BuyPriceStep`, `OrderSizeStep`, `JoinSellKey`).
+- [05. Selling and take-profit tracking algorithms (05-sell-and-take-profit.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/05-sell-and-take-profit.md): the `Sell` tab (`SellPrice`, `SellByFilters`, `SellByCustomEMA`, `PriceDown`, `SellLevel`, `SellShot`, `SellSpread`).
+- [06. Stop-loss cascade, breakeven and trailing (06-stops-and-trailing.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/06-stops-and-trailing.md): the `Stops` tab (`StopLoss`, `SecondStopLoss`, `StopLoss3`, `TrailingPercent`, `UseBV_SV_Stop`).
+- [07. Master → Slave triggers and session management (07-triggers-and-sessions.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/07-triggers-and-sessions.md): the `Triggers` (`TriggerKey*`, `TriggerByKey`, `TriggerKeysBL`) and `Session` tabs.
+- [08. General settings, Telegram/UDP, interface and migrations (08-ui-system-and-migrations.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/08-ui-system-and-migrations.md): the `Main`, `UI`, `Telegram` tabs, the `FVersion` rename history and the `MoonBot.ini` options.
+
+## Ready-made strategy templates (`examples/strategies/`)
+
+A strategy block starts with the lines `##Begin_Strategy`, `Active=0` (or `Active=-1`), `FVersion=12`. The terminal pastes several strategies from one text with `Ctrl+V` only if the first line is `##MultiSelection`; otherwise only the first one is pasted.
+
+- [Catalog of all templates (examples/strategies/README.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/examples/strategies/README.md)
+- [01. CustomEMA filter diagnostics and trade statistics collection](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/examples/strategies/01-ema-rulers-and-data-collector.md)
+- [02. Tiered MoonShot strategy pack (two depth tiers)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/examples/strategies/02-moonshot-tiered-pack.md)
+- [03. Autonomous MoonHook and semi-automatic manual hooks (Manual + MoonHook)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/examples/strategies/03-moonhook-and-manual-combo.md)
+- [04. Master → Slave links: emulator scout and cascading position add-ons](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/examples/strategies/04-master-slave-scout-and-ladders.md)
+- [05. Global BTC dump shield and delisting protection (MoonNews)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/examples/strategies/05-btc-dump-shield-and-delist-guard.md)
+- [06. Deep bounce formula and whale monitoring on Hyperliquid (Watcher)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/examples/strategies/06-deep-bounce-and-hl-watcher.md)
+
+## Conceptual chapters on scalping mechanics and algorithms (`concepts/`)
+
+- [01. Coin selection for scalping and the market filter system](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/01-market-selection-and-filters.md)
+- [02. Finding trading situations: market activity detects and external signals](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/02-detect-pipeline-and-signals.md)
+- [03. Spike hunting and impulse moves: MoonShot, MoonHook, manual hooks and MoonStrike](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/03-spike-hunting-mechanics.md)
+- [04. Strategy links via triggers (Master → Slave) and session management](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/04-triggers-and-master-slave.md)
+- [05. CustomEMA formulas: conditions on price, volumes, extremes and arbitrage](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/05-ema-geometry-and-formulas.md)
+- [06. Position management and risk control: orders, grids, take-profits and stop losses](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/06-orders-exits-and-stops-cascade.md)
+- [07. Moon Kernel, a trading VPS, the control bot and working with exchanges](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/07-kernel-vps-and-infrastructure.md)
+- [08. Testing and debugging strategies: Filters on charts, the Pencil, Emulator, BackTest, reports and the “why it does not buy” checklist](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/08-testing-debugging-and-analytics.md)
+
+## Performance and engineering examples
+
+- [Moonbot performance: three applied comparisons on Linux](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/engineering/README.md): trade processing, a full exchange instrument list and a buy estimate from the order book.
+- [Performance examples: download and verify](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/engineering/benchmarks/README.md): sources, ready-made Linux programs, building it yourself and verifying the three tasks.
+
+## Diagnostics, protocols and the official website
+
+- [Filter check order (filter-execution-order.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/filter-execution-order.md)
+- [Decoding `logs/LOG_YYYY-MM-DD.log` logs and exchange errors (exchange-errors-and-logs.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/exchange-errors-and-logs.md)
+- [MoonCMD UDP remote control protocol (mooncmd-udp-protocol.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/mooncmd-udp-protocol.md)
+- [Table of contents of the documentation on moonbot.pro (llms.txt)](https://moonbot.pro/llms.txt)
