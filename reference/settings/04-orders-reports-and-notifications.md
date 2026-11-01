@@ -145,7 +145,7 @@ These configure Moonbot GUI handlers. An SDK terminal binds its own input to act
 
 `ReportConfig` stores the report presentation. SDK report-request filters and columns have their own contract; GUI settings are not automatically applied to requests. Column visibility/width refers to the Moonbot table, not an arbitrary terminal table.
 
-Trade screenshots, system notifications and observers have separate switches. Outgoing Telegram-bot settings and active WatchDog rows are configured in Moonbot; check [SDK availability](10-settings-apis.md) before building a remote editor.
+Trade screenshots, system notifications and observers have separate switches. Outgoing Telegram-bot settings and active WatchDog rows have [dedicated SDK APIs](10-settings-apis.md); enable remote controls only when the connected core advertises support.
 
 ## Report-column slots
 

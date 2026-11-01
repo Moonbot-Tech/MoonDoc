@@ -10,8 +10,8 @@ Use the interface that owns the setting. A saved preference, a live runtime swit
 | Frequently updated controls exposed by compact settings | `client.settings().send(...)`; review the path differences below |
 | Automatic leverage policy | `client.settings().manage_leverage(...)` |
 | A market's leverage now | `client.account().set_leverage(...)` |
-| Telegram reader, account and proxy | `client.telegram()` |
-| Active control-bot observers | Moonbot Control bot settings; SDK management is not yet public |
+| Telegram reader, account, proxy and outgoing bot | `client.telegram()` |
+| Active control-bot observers | `client.watchdogs()` |
 | Client connection, subscriptions and storage | SDK configuration; not SharedConfig |
 
 Field meanings: [trading and leverage](03-trading-and-leverage.md), [startup and protection](01-startup-and-protection.md).
@@ -65,23 +65,46 @@ The current kernel has a compact-path rule: after applying it, the server forces
 
 ## Telegram on the kernel
 
-Use `client.telegram()` and its `state()` snapshot to control the reader on the kernel's machine.
+The Telegram reader and outgoing bot are separate components. Use `client.telegram()` and its `state()` snapshot. This controls the service on the kernel's machine, not a local Telegram client in the terminal.
 
 | Setting | API and meaning |
 | :--- | :--- |
 | Reader enabled | `set_enabled(bool)`. Disabling does not log out the Telegram account |
-| Proxy | `set_proxy(TelegramProxy::None / Socks5 / MtProto)`. SOCKS5 takes host, port, user and password; MTProto takes host, port and secret. This replaces the proxy configuration; an empty password does not preserve the previous one |
-| Login | Follow `service.auth_state` through phone/QR, code and 2FA steps. These are actions; do not replay them automatically after reconnect |
+| Proxy | `set_proxy(TelegramProxy::None / Socks5 / MtProto)`. SOCKS5: host, port, user, password; MTProto: host, port, secret. Complete replacement: an empty password does not preserve the previous one. Password/secret is never returned |
+| Own outgoing bot | `set_outgoing_bot(own_bot, token)`. `None` preserves the token, `Some("")` clears it. State exposes only `token_set` |
+| Channel binding | `generate_channel_pin()`, then the user sends the PIN to the intended channel; `channel_id`/`channel_name` describe the binding. `reset_channel()` clears it |
+| Login | Phone/QR, code, 2FA and other steps follow `service.auth_state`. These are actions, not SharedConfig fields; never replay automatically after reconnect |
 
-Remote login requires `state_supported`, a live service and the matching authentication step. The Telegram account and active service proxy are shared by Moonbot instances on the machine; logging out affects them together. Saved proxy preferences can differ from the service's active proxy.
+Availability: outgoing settings require Moonbot 7.72 L6 with service-settings support and `settings_supported=true` in the received snapshot. Earlier builds do not expose these controls. Remote login requires `state_supported`, a live service and the current authentication step. Saved proxy fields (`proxy_type`: 0=none, 1=SOCKS5, 2=MTProto) can differ from the actual `service.proxy`. The Telegram account and active service proxy are shared by bots on the machine; logout affects them, not just the selected core.
 
-The outgoing notification bot and channel binding are separate from the reader. **Their management API is not yet in the public MoonProto SDK**; configure them in Moonbot. See the [SDK Telegram workflow](https://github.com/Moonbot-Tech/MoonProto/blob/main/docs/telegram.md) for available methods and events.
+Outgoing-bot and channel operations return a request ID: match `ServiceSettingsApplied.request_id`. `applied=true` with a nonempty `error` means the change is active in memory but saving failed. Login/proxy actions are observed through state, not this result ID. Full workflow: [SDK Telegram documentation](https://github.com/Moonbot-Tech/MoonProto/blob/main/docs/telegram.md).
 
 ## WatchDog: control bots and unaccounted positions
 
-Configure active observers in Moonbot's **Control bot settings**. The [OrdersControl fields](03-trading-and-leverage.md#orderscontrol) include order ownership markers, reports and the response to unaccounted positions. Their first four legacy mirror fields do not configure the active observer list.
+Use `client.watchdogs().state()`, `refresh()`, `state.edit()`, `apply(&settings)` and `remove(id)`. This requires Moonbot 7.72 L6 with service-settings support; on older cores the snapshot stays unavailable. Disable edits while disconnected and obtain a fresh snapshot after reconnect. The first four legacy `OrdersControl` fields do not replace this API.
 
-**Observer management is not yet exposed by the public MoonProto SDK.** A settings panel can edit the documented SharedConfig preferences, but must not present those legacy fields as a working observer editor. The observer-management API and its request/result handling will be documented here when published.
+| Field | Meaning |
+| :--- | :--- |
+| `server_ip` | Observer-server IPv4 to which this bot sends information; empty/0.0.0.0 disables the destination. Not an exchange API endpoint |
+| `sign_orders` | Mark orders to identify their owning bot; also required for sending information to the observer server |
+| `report` | Telegram notifications about confirmed unaccounted positions |
+| `auto_sell` | Automatically close confirmed unaccounted positions; requires position control |
+| `blacklist` | Position-control exclusions, as in `trading.h_pos_black_list_text` |
+| `entries[].id` | Opaque identity in the current kernel session; empty adds an observer. Obtain fresh IDs after reconnect |
+| `name` | Observed-account label |
+| `api_key`, `api_secret` | `None` preserves the stored credential; a supplied string replaces it. Empty/too-short keys are rejected. Changing keys reconnects only that observer |
+| `rsa` | Signature type of the observed account's keys |
+| `orders` | Control buys by distance from market price and time without an update |
+| `price` | Nonnegative percentage: a buy becomes a cancellation candidate when distance from current price is **at most** the threshold. Zero disables this check |
+| `time` | Nonnegative seconds without an update to the tracked order; reaching the threshold makes it a cancellation candidate. Zero disables age checking |
+| `positions` | Control unaccounted positions; requires core support and license |
+| `ip` | Cancel related buys after losing the observed bots' heartbeat. Not exchange API-key IP verification |
+
+`available` indicates a controller, `supported` core/platform support, and `can_edit` the observer-editing license. Sender address is independent. Row statuses are Added, Error, Ready, Checking and Removing; the snapshot also has error, online bot count, duplicate flag and addition date. These are read-only state, not editable settings.
+
+Entries omitted from `apply` are **retained**; deletion is explicit. Full credentials are never returned. Observe `ServiceSettingsApplied` as for Telegram; after a save failure use the returned IDs so retrying does not add duplicates. `cancel_buys()` is a separate action, whose acknowledgement does not confirm exchange execution. More: [SDK WatchDog documentation](https://github.com/Moonbot-Tech/MoonProto/blob/main/docs/watchdogs.md).
+
+`refresh()` returns the full state in the matching `ServiceSettingsApplied` result, action `get`. A separate `WatchDogsUpdated` event is not required. Both paths update the retained snapshot, and delayed replies cannot roll it back to an older revision.
 
 For the trading role and deployment, see [the kernel, VPS and control bot](../../concepts/07-kernel-vps-and-infrastructure.md).
 
