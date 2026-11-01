@@ -186,6 +186,12 @@ cargo run --example trades_stream -- "<MOONBOT_KEY>" 127.0.0.1:3500 BTCUSDT
 
 [**MoonTerminal**](https://github.com/Moonbot-Tech/MoonTerminal) is a new graphical terminal (in active development) written in Rust (`GPUI`) on top of the `MoonProto` protocol. It builds natively for **Windows, macOS and Linux**, renders tick charts and order books on the GPU (`DirectX 11`, `Metal`, `wgpu`) and lets you manage **several remote Moonbot kernels from one window**. The classic, production-ready **Moonbot** terminal runs on **Windows** (and on **Linux via Wine**).
 
+<p align="center">
+  <a href="https://github.com/Moonbot-Tech/MoonTerminal">
+    <img src="assets/moonterminal-main.png" width="840" alt="MoonTerminal trading interface with charts, orders, reports and assets">
+  </a>
+</p>
+
 ## How the Moonbot ecosystem is organized
 
 ```mermaid
