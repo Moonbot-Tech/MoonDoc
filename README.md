@@ -48,6 +48,7 @@ The terminal connects directly via API to **Binance, Bybit, OKX, Gate.io, Bitget
 | **Understand the logic of scalping, detects and autotrading** | Go to [Trading algorithms and terminal mechanics (`concepts/`)](#part-1-trading-algorithms-and-terminal-mechanics-concepts) — from reading the order book and selecting coins to configuring strategies and controlling risk |
 | **Study ready-made strategy configurations** | Open the [Strategy examples (`examples/strategies/`)](#part-2-ready-made-strategy-templates-examplesstrategies) library with configurations for manual, semi-automatic and automatic trading |
 | **Use the parameter reference or connect an AI** | Use the [Technical reference (`reference/`)](#part-3-technical-reference-of-parameters-and-protocols-reference) and the ready-made context for configuring strategies with AI assistants |
+| **Configure the kernel or build settings controls with MoonProto** | Open the [settings reference](reference/settings/README.md) for trading effects, units, dependencies and the correct API for each setting |
 
 ---
 
@@ -148,6 +149,7 @@ A collection of working configurations in the standard Moonbot import format (`#
 
 | Reference section | Contents |
 | :--- | :--- |
+| [**Kernel settings and MoonProto integration**](reference/settings/README.md) | Order sizing, leverage, loss stops, charts and service settings: meanings, units, dependencies and editing APIs; [539-field index](reference/settings/index.tsv) |
 | [**`strategy-selection-guide.md`**](reference/strategy-selection-guide.md) | **Choosing an algorithm for a trading task:** the table “Trading task &rarr; Which `SignalType` to choose &rarr; Meaning · Parameters · Template” and an overview of all 23 strategy types |
 | [**`parameters-by-lifecycle.md`**](reference/parameters-by-lifecycle.md) and [**`params/01..08.md`**](reference/params/) | The complete reference of 484 strategy parameters, split into 8 compact thematic sections by terminal tab and trade stage (with a [quick index `params/index.tsv`](reference/params/index.tsv)) |
 | [**`AI_GUIDE.md`**](reference/AI_GUIDE.md) | **Guide to generating and checking strategies:** base default parameter values, mandatory config formatting rules and a pre-launch checklist |
@@ -181,6 +183,8 @@ cargo run --example order_book_top -- "<MOONBOT_KEY>" 127.0.0.1:3500 BTCUSDT
 # Receive the real-time tick trade stream
 cargo run --example trades_stream -- "<MOONBOT_KEY>" 127.0.0.1:3500 BTCUSDT
 ```
+
+To build a settings panel, use the [kernel settings reference](reference/settings/README.md) for field meanings and dependencies, and [choosing the settings API](reference/settings/10-settings-apis.md) for reading, saving and checking the result.
 
 ### MoonTerminal: a cross-platform interface built on MoonProto
 

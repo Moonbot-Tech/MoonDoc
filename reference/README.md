@@ -1,9 +1,10 @@
 # Reference: exact tables for the trader and the AI assistant
 
-The reference layer of the knowledge base: no explanations here, only verifiable facts — parameters, check order, error codes, protocol. Meaning and context are in the [chapters](../concepts/README.md); ready-made configurations are in the [templates](../examples/strategies/README.md).
+Exact parameter names, units, conditions and interactions for configuring Moonbot and building integrations. Trading mechanics are explained in the [conceptual chapters](../concepts/README.md); ready-made configurations are in the [strategy templates](../examples/strategies/README.md).
 
 | File | What is inside | When to open |
 | :--- | :--- | :--- |
+| [**`settings/`**](settings/README.md) | Kernel settings for order sizing, leverage, risk controls, charts, Telegram and control bots; [539-field SDK index](settings/index.tsv) and [editing APIs](settings/10-settings-apis.md) | you are configuring global behavior or building a settings panel with MoonProto |
 | [**`params/`**](params/README.md) | All 484 strategy parameters in eight thematic tables (filters and coins, detectors, buying, grids, selling, stops, triggers and sessions, system) and the alphabetical index [`params/index.tsv`](params/index.tsv) for machine reading | you need the exact meaning, type, default and relations of a parameter |
 | [**`AI_GUIDE.md`**](AI_GUIDE.md) | Rules for importing strategy text (`Active`, `FVersion`, name case, suffixes), conditions of the Autotrading module, verified configuration-node templates, formula syntax | you are building a strategy with an AI assistant or by hand in text form |
 | [**`strategy-selection-guide.md`**](strategy-selection-guide.md) | The navigator "trading task → strategy type → key parameters → template" and cards of all strategy types with access conditions | you do not know which `SignalType` fits the idea |
@@ -13,4 +14,4 @@ The reference layer of the knowledge base: no explanations here, only verifiable
 | [**`exchange-errors-and-logs.md`**](exchange-errors-and-logs.md) | Exchange response codes and lines of the `logs/LOG_YYYY-MM-DD.log` log: what it means, what the terminal does, what the trader should do | there is an error or an unclear line in the log |
 | [**`mooncmd-udp-protocol.md`**](mooncmd-udp-protocol.md) | The `MoonCMD` protocol: terminal control commands over UDP, `HMAC-SHA256` signature, response and telemetry format | you are writing your own automation on top of the terminal ([Python example](../examples/integrations/mooncmd-python-client/)) |
 
-All tables are verified against the terminal source code (`v7.71`, `FVersion=12`) and the parameter tooltips; where the tooltips or the site diverge from the code, this is noted in the text.
+The strategy parameter tables use `v7.71`, `FVersion=12`. Kernel settings have a separate SDK model: use the connected kernel's state and the field-specific conditions in the settings reference.

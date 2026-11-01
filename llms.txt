@@ -1,6 +1,6 @@
 # Moonbot — documentation on scalping, trading algorithms and strategy parameters (v7.71, FVersion=12)
 
-> The official knowledge base of the Moonbot trading terminal (https://moonbot.pro). It contains a conceptual description of the scalping and autotrading algorithms, ready-made strategy templates in the `##Begin_Strategy ... ##End_Strategy` format and a complete technical reference of 484 parameters.
+> The official knowledge base of the Moonbot trading terminal (https://moonbot.pro). It covers scalping and autotrading algorithms, ready-made strategy templates in the `##Begin_Strategy ... ##End_Strategy` format, 484 strategy parameters, and kernel settings exposed through MoonProto.
 
 ## Mandatory rules for generating and checking strategies
 
@@ -22,6 +22,23 @@ For a targeted parameter lookup, load only the thematic section you need instead
 - [06. Stop-loss cascade, breakeven and trailing (06-stops-and-trailing.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/06-stops-and-trailing.md): the `Stops` tab (`StopLoss`, `SecondStopLoss`, `StopLoss3`, `TrailingPercent`, `UseBV_SV_Stop`).
 - [07. Master → Slave triggers and session management (07-triggers-and-sessions.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/07-triggers-and-sessions.md): the `Triggers` (`TriggerKey*`, `TriggerByKey`, `TriggerKeysBL`) and `Session` tabs.
 - [08. General settings, Telegram/UDP, interface and migrations (08-ui-system-and-migrations.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/08-ui-system-and-migrations.md): the `Main`, `UI`, `Telegram` tabs, the `FVersion` rename history and the `MoonBot.ini` options.
+
+## Kernel settings and MoonProto integration
+
+Global kernel settings are separate from strategy parameters. Start from a received settings snapshot, preserve unedited fields and unknown tails, and check returned values after saving. GUI bounds and units are field-specific; do not infer them from Rust types or SDK defaults.
+
+- [Settings overview](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/README.md): task-based navigation, units and setting dependencies.
+- [SDK field index](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/index.tsv): all 539 public fields in 34 SharedConfig structures, their types and exact documentation anchors; includes saved state and reserved fields.
+- [Startup and protection](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/01-startup-and-protection.md): loss windows, exchange-response time, API errors, working hours and automatic recovery.
+- [Signals and alerts](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/02-signals-and-alerts.md): Telegram and clipboard parsing, automatic entry switches, sounds and saved filters.
+- [Trading and leverage](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/03-trading-and-leverage.md): order amounts, entry/exit defaults, pending-order spread, leverage targets and margin policy.
+- [Order controls, reports and notifications](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/04-orders-reports-and-notifications.md): clicks, Manual presets, report filters and screenshot destinations.
+- [Charts and display](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/05-charts-and-display.md): ticks, order books, volumes, candles, comparison feeds and diagnostic overlays.
+- [Drawing tools and news](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/06-drawing-and-news.md): drawing-tool codes, Pencil simulation and news-card settings.
+- [Interface and hotkeys](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/07-interface-and-hotkeys.md): shortcut encoding, manual presets and market-table layout.
+- [Themes and INI](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/08-theme-and-ini.md): supported INI keys, colors and whole-section replacement.
+- [SharedConfig structure](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/09-config-structure.md): top-level sections and preservation rules.
+- [Choosing the settings API](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/10-settings-apis.md): read/edit/send/verify, full versus compact settings, Telegram, WatchDog and client-local options.
 
 ## Ready-made strategy templates (`examples/strategies/`)
 
