@@ -16,6 +16,8 @@ from __future__ import annotations
 import json
 import re
 import urllib.request
+from calendar import monthrange
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -94,6 +96,18 @@ def parse_day_entry(raw_d: str) -> tuple[int, str, int] | None:
     if not m:
         return None
     return int(m.group(1)), m.group(3), int(m.group(2))
+
+
+def completed_months(volumes: list[dict], today: date) -> list[dict]:
+    def month_key(row):
+        year, month = row["d"].split()
+        return int(year), MONTH_MAP[month]
+
+    rows = sorted((r for r in volumes if month_key(r) < (today.year, today.month)), key=month_key, reverse=True)
+    previous = today.replace(day=1) - timedelta(days=1)
+    if not rows or month_key(rows[0]) != (previous.year, previous.month):
+        raise ValueError(f"Monthly statistics for {previous:%Y-%m} are not available yet")
+    return rows
 
 
 def render_daily_svg(year: int, month_name: str, daily_rows: list[tuple[int, float]]) -> str:
@@ -185,7 +199,7 @@ def main() -> None:
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
     STATS_DIR.mkdir(parents=True, exist_ok=True)
 
-    volumes = fetch_json("https://stat.moonbot.pro/getVolumes")
+    volumes = completed_months(fetch_json("https://stat.moonbot.pro/getVolumes"), datetime.now(timezone.utc).date())
     top_days = fetch_json("https://stat.moonbot.pro/getTopDays")
 
     total_vol = sum(parse_int(r["v"]) for r in volumes)
@@ -209,15 +223,17 @@ def main() -> None:
         if parsed and parsed[0] == year and parsed[1] == month_name:
             daily_rows.append((parsed[2], float(row["p"])))
     daily_rows.sort(key=lambda x: x[0])
+    if [day for day, _ in daily_rows] != list(range(1, monthrange(year, month_num)[1] + 1)):
+        raise ValueError(f"Daily statistics for {month_slug} are incomplete; keeping the published snapshot")
 
     days_count = len(daily_rows)
-    first_day = daily_rows[0][0] if daily_rows else 1
-    last_day = daily_rows[-1][0] if daily_rows else 1
+    first_day = daily_rows[0][0]
+    last_day = daily_rows[-1][0]
     net_total = int(round(sum(v for _, v in daily_rows)))
     pos_days = sum(1 for _, v in daily_rows if v >= 0)
     neg_days = sum(1 for _, v in daily_rows if v < 0)
-    best_day, best_val = max(daily_rows, key=lambda x: x[1]) if daily_rows else (1, 0.0)
-    worst_day, worst_val = min(daily_rows, key=lambda x: x[1]) if daily_rows else (1, 0.0)
+    best_day, best_val = max(daily_rows, key=lambda x: x[1])
+    worst_day, worst_val = min(daily_rows, key=lambda x: x[1])
 
     # 1. Write the SVG chart
     svg_path = ASSETS_DIR / "stats-current-month.svg"
@@ -259,13 +275,13 @@ def main() -> None:
         "",
         f"- **Total tracked volume (March 2019 – {ru_nom} {year}):** `${fmt_spaced(total_vol)}` (`${total_vol / 1e9:.2f} billion`)",
         f"- **Total filled orders:** `{fmt_spaced(total_orders)}` (`{total_orders / 1e6:.2f} million`)",
-        f"- **Current monthly snapshot:** [`stats/{month_slug}.md`]({month_slug}.md)",
+        f"- **Last completed month:** [`stats/{month_slug}.md`]({month_slug}.md)",
         "",
-        "> The month file `stats/YYYY-MM.md` is updated while the month is current. After the month changes it is no longer appended and stays as of its last update: the last days of the month may be missing from it. The table below re-reads the monthly totals from [`stat.moonbot.pro`](https://stat.moonbot.pro/) on every update; the full daily data is there as well.",
+        "The chart, monthly snapshot and totals cover completed months. Each update refreshes the previous month's snapshot from [`stat.moonbot.pro`](https://stat.moonbot.pro/), including every calendar day.",
         "",
-        "![Daily result of the current month](../assets/stats-current-month.svg)",
+        "![Daily result of the last completed month](../assets/stats-current-month.svg)",
         "",
-        "## Last 12 months",
+        "## Last 12 completed months",
         "",
         "| Month | Trading volume, $ | Filled orders | Active markets |",
         "| --- | --- | --- | --- |",
@@ -278,8 +294,8 @@ def main() -> None:
 
     # 4. Update the block in README.md
     six_rows_ru = "\n".join(
-        f"| {fmt_month_ru(r['d'])}{'*' if i == 0 else ''} | ${fmt_spaced(parse_int(r['v']))} | {fmt_spaced(parse_int(r['o']))} |"
-        for i, r in enumerate(volumes[:6])
+        f"| {fmt_month_ru(r['d'])} | ${fmt_spaced(parse_int(r['v']))} | {fmt_spaced(parse_int(r['o']))} |"
+        for r in volumes[:6]
     )
     ru_block = f"""### {ru_nom} {year} ({ru_gen} {first_day}–{last_day})
 
@@ -299,13 +315,13 @@ def main() -> None:
 <sub>Daily net result of public statistics participants, $, {ru_gen} {first_day}–{last_day}, {year}. Source: <a href="https://stat.moonbot.pro/">stat.moonbot.pro</a> (voluntary anonymized telemetry from terminals with statistics sending enabled). Full daily table: <a href="stats/{month_slug}.md"><code>stats/{month_slug}.md</code></a>.</sub>
 
 <details>
-<summary><b>Volume and trades over the last 6 months (total since March 2019: ${total_vol / 1e9:.1f} billion+ · {total_orders / 1e6:.1f} million+ orders)</b></summary>
+<summary><b>Volume and trades over the last 6 completed months (total since March 2019: ${total_vol / 1e9:.1f} billion+ · {total_orders / 1e6:.1f} million+ orders)</b></summary>
 
 | Month | Trading volume, $ | Filled orders |
 | :--- | ---: | ---: |
 {six_rows_ru}
 
-<sub>* The month is still in progress. Full archive since March 2019: <a href="stats/README.md"><code>stats/README.md</code></a> and <a href="https://stat.moonbot.pro/">stat.moonbot.pro</a>.</sub>
+<sub>Full archive since March 2019: <a href="stats/README.md"><code>stats/README.md</code></a> and <a href="https://stat.moonbot.pro/">stat.moonbot.pro</a>.</sub>
 </details>"""
 
     readme_path = ROOT / "README.md"

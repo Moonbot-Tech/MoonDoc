@@ -62,36 +62,36 @@ The terminal connects directly via API to **Binance, Bybit, OKX, Gate.io, Bitget
 ## User results by month
 
 <!-- STATS:START -->
-### November 2026 (November 1–1)
+### October 2026 (October 1–31)
 
 | Value | Metric |
 | :--- | :--- |
-| **$12 400 295** | trading volume in USDT equivalent |
-| **20 368** | filled orders on 116 active markets |
-| **−$16 179** | total net result of rating participants over 1 days |
-| **0 / 1** | positive days / negative days |
-| **−$16 179** | best day, November 1 |
-| **−$16 179** | worst day, November 1 |
+| **$1 019 796 952** | trading volume in USDT equivalent |
+| **1 561 931** | filled orders on 234 active markets |
+| **+$707 716** | total net result of rating participants over 31 days |
+| **23 / 8** | positive days / negative days |
+| **+$152 884** | best day, October 16 |
+| **−$50 528** | worst day, October 27 |
 
 <p align="center">
-  <img src="assets/stats-current-month.svg" width="720" alt="Daily result of Moonbot users for November 2026, USD">
+  <img src="assets/stats-current-month.svg" width="720" alt="Daily result of Moonbot users for October 2026, USD">
 </p>
 
-<sub>Daily net result of public statistics participants, $, November 1–1, 2026. Source: <a href="https://stat.moonbot.pro/">stat.moonbot.pro</a> (voluntary anonymized telemetry from terminals with statistics sending enabled). Full daily table: <a href="stats/2026-11.md"><code>stats/2026-11.md</code></a>.</sub>
+<sub>Daily net result of public statistics participants, $, October 1–31, 2026. Source: <a href="https://stat.moonbot.pro/">stat.moonbot.pro</a> (voluntary anonymized telemetry from terminals with statistics sending enabled). Full daily table: <a href="stats/2026-10.md"><code>stats/2026-10.md</code></a>.</sub>
 
 <details>
-<summary><b>Volume and trades over the last 6 months (total since March 2019: $165.1 billion+ · 205.6 million+ orders)</b></summary>
+<summary><b>Volume and trades over the last 6 completed months (total since March 2019: $165.1 billion+ · 205.6 million+ orders)</b></summary>
 
 | Month | Trading volume, $ | Filled orders |
 | :--- | ---: | ---: |
-| November 2026* | $12 400 295 | 20 368 |
 | October 2026 | $1 019 796 952 | 1 561 931 |
 | September 2026 | $1 378 946 958 | 1 803 380 |
 | August 2026 | $1 418 669 807 | 1 589 519 |
 | July 2026 | $870 851 340 | 1 733 426 |
 | June 2026 | $1 390 033 760 | 1 775 917 |
+| May 2026 | $1 013 695 489 | 1 678 354 |
 
-<sub>* The month is still in progress. Full archive since March 2019: <a href="stats/README.md"><code>stats/README.md</code></a> and <a href="https://stat.moonbot.pro/">stat.moonbot.pro</a>.</sub>
+<sub>Full archive since March 2019: <a href="stats/README.md"><code>stats/README.md</code></a> and <a href="https://stat.moonbot.pro/">stat.moonbot.pro</a>.</sub>
 </details>
 <!-- STATS:END -->
 
