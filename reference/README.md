@@ -4,6 +4,7 @@ Exact parameter names, units, conditions and interactions for configuring Moonbo
 
 | File | What is inside | When to open |
 | :--- | :--- | :--- |
+| [**Linux kernel commands**](linux-kernel-commands.md) | `mb`, service control, logs, status, MoonProto setup and updates over SSH | you need to monitor or manage a Linux kernel on a VPS |
 | [**`settings/`**](settings/README.md) | Kernel settings for order sizing, leverage, risk controls, charts, Telegram and control bots; [539-field SDK index](settings/index.tsv) and [editing APIs](settings/10-settings-apis.md) | you are configuring global behavior or building a settings panel with MoonProto |
 | [**`params/`**](params/README.md) | All 484 strategy parameters in eight thematic tables (filters and coins, detectors, buying, grids, selling, stops, triggers and sessions, system) and the alphabetical index [`params/index.tsv`](params/index.tsv) for machine reading | you need the exact meaning, type, default and relations of a parameter |
 | [**`AI_GUIDE.md`**](AI_GUIDE.md) | Rules for importing strategy text (`Active`, `FVersion`, name case, suffixes), conditions of the Autotrading module, verified configuration-node templates, formula syntax | you are building a strategy with an AI assistant or by hand in text form |

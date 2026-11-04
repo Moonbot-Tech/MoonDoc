@@ -3,6 +3,8 @@
 > **Official Moonbot documentation:** [Moon Kernel](https://moonbot.pro/documentation/menu-button/moon-kernel) | [Recommendations for Terminal Setup for Autotrading on Servers](https://moonbot.pro/documentation/strategy-usage/recommendations-for-terminal-setup-for-autotrading) | [Moonbot for Linux](https://moonbot.pro/moonbot-pro/download/linux) | [Hang Control](https://moonbot.pro/documentation/settings-advanced-tab/hang-control) | [Connecting to the Hyperliquid exchange](https://moonbot.pro/documentation/settings-login-tab/connecting-to-the-hyperliquid-exchange)  
 > **Related sections:** [01. Coin selection and filters](01-market-selection-and-filters.md) | [06. Orders, take-profits and stops](06-orders-exits-and-stops-cascade.md) | [08. Testing and debugging](08-testing-debugging-and-analytics.md) | [Reference: exchange error codes and log entries](../reference/exchange-errors-and-logs.md) | [Reference: the MoonCMD protocol](../reference/mooncmd-udp-protocol.md)
 
+**Linux operations:** [SSH commands for monitoring and managing the kernel](../reference/linux-kernel-commands.md).
+
 ---
 
 ## 1. Why a trading bot needs a server and what is computed on it

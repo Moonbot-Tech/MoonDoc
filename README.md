@@ -149,6 +149,7 @@ A collection of working configurations in the standard Moonbot import format (`#
 
 | Reference section | Contents |
 | :--- | :--- |
+| [**Linux kernel commands**](reference/linux-kernel-commands.md) | Monitor a trading VPS, read logs, start/stop the service, configure MoonProto and update the kernel over SSH |
 | [**Kernel settings and MoonProto integration**](reference/settings/README.md) | Order sizing, leverage, loss stops, charts and service settings: meanings, units, dependencies and editing APIs; [539-field index](reference/settings/index.tsv) |
 | [**`strategy-selection-guide.md`**](reference/strategy-selection-guide.md) | **Choosing an algorithm for a trading task:** the table “Trading task &rarr; Which `SignalType` to choose &rarr; Meaning · Parameters · Template” and an overview of all 23 strategy types |
 | [**`parameters-by-lifecycle.md`**](reference/parameters-by-lifecycle.md) and [**`params/01..08.md`**](reference/params/) | The complete reference of 484 strategy parameters, split into 8 compact thematic sections by terminal tab and trade stage (with a [quick index `params/index.tsv`](reference/params/index.tsv)) |
