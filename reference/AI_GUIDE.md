@@ -1,5 +1,7 @@
 # Guide to generating and verifying Moonbot strategies (`FVersion=12`) for AI assistants
 
+For live typed operations through Station MCP / ActiveLib, use the [Station MCP guide](station-mcp-guide.md). This page describes the separate text-import format.
+
 > **Purpose of this document:** A reference of the strategy text import rules, default values and syntax constraints of the Moonbot terminal (`v7.71` / `FVersion=12`) for language models and AI assistants that create, verify and modernize `##Begin_Strategy ... ##End_Strategy` configurations.  
 > **Official Moonbot documentation:** [Documentation](https://moonbot.pro/documentation) | [Education](https://moonbot.pro/education)
 
