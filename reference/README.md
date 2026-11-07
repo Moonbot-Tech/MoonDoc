@@ -4,6 +4,8 @@ Exact parameter names, units, conditions and interactions for configuring Moonbo
 
 | File | What is inside | When to open |
 | :--- | :--- | :--- |
+| [**Station MCP and ActiveLib**](station-mcp-guide.md) | AI tools, live schemas, commands, permissions, observation and reports | an AI connects to a Station to inspect or control cores |
+| [**Log-analysis workflow**](station-log-analysis.md) | Bounded observations, order correlation, timestamps and causal evidence | an AI investigates what the bots are doing or why an action failed |
 | [**Linux kernel commands**](linux-kernel-commands.md) | `mb`, service control, logs, status, MoonProto setup and updates over SSH | you need to monitor or manage a Linux kernel on a VPS |
 | [**`settings/`**](settings/README.md) | Kernel settings for order sizing, leverage, risk controls, charts, Telegram and control bots; [539-field SDK index](settings/index.tsv) and [editing APIs](settings/10-settings-apis.md) | you are configuring global behavior or building a settings panel with MoonProto |
 | [**`params/`**](params/README.md) | All 484 strategy parameters in eight thematic tables (filters and coins, detectors, buying, grids, selling, stops, triggers and sessions, system) and the alphabetical index [`params/index.tsv`](params/index.tsv) for machine reading | you need the exact meaning, type, default and relations of a parameter |

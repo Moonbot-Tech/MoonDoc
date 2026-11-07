@@ -4,6 +4,8 @@
 
 ## Mandatory rules for generating and checking strategies
 
+For live operations through Station MCP / ActiveLib, start with the [Station MCP guide](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/station-mcp-guide.md). Use the connected core's typed schema; the text-import syntax below is a separate interface. For diagnosis, use the [log-analysis workflow](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/station-log-analysis.md).
+
 Before composing or analyzing a strategy, read these three documents:
 - [AI guide and default values (AI_GUIDE.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/AI_GUIDE.md): the mandatory structure of the `##Begin_Strategy ... ##End_Strategy` block, dangerous defaults when lines are omitted, and the verification checklist.
 - [Strategy type selection guide by task (strategy-selection-guide.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/strategy-selection-guide.md): the table “Trading task → Which SignalType to choose → Meaning · Parameters · Template” and an overview of all 23 `SignalType` values.
