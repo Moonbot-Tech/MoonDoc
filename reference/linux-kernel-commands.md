@@ -2,7 +2,7 @@
 
 Use these commands over SSH on the VPS running Moonbot. `mb` talks to a selected kernel; `systemctl` starts and stops its Linux service. A running service and a successful exchange login are separate checks.
 
-For a new VPS, start with [Download and install the Linux kernel](linux-installation.md).
+For a new VPS, start with [Download and install the Linux kernel](linux-installation.md). MoonTerminal can run the status, log and service actions in [Manage the core from MoonTerminal](#manage-the-core-from-moonterminal).
 
 ## Select the kernel
 
@@ -36,7 +36,7 @@ Inside the instance's own folder, you can omit the name: `sudo mb --status`, `su
 
 `Ctrl+C` ends a log viewer or `systemd-cgtop`; it does not stop the kernel. `CPUUsageNSec` is accumulated CPU time, not current CPU load. Resource counters depend on the host's systemd accounting settings.
 
-The trading log is `logs/LOG_YYYY-MM-DD.log` in the instance folder. `journalctl` shows the service journal; it does not replace the trading log. To inspect a specific period:
+The trading log is `logs/LOG_YYYY-MM-DD.log` in the instance folder. Timestamps use the local time of the machine running the core; account for its time zone when matching events. `journalctl` shows the service journal; it does not replace the trading log. To inspect a specific period:
 
 ```sh
 sudo journalctl -u "$unit" --since '1 hour ago' --no-pager
@@ -92,6 +92,8 @@ There are no `mb --start`, `mb --stop` or `mb --restart` commands. Running `./Mo
 
 Exchange selection, credential changes and `--retry-login` use the normal exchange disconnect/login sequence: strategies stop, orders go through the usual disconnect handling and clients reconnect. The kernel process stays running. Selecting a previously configured exchange also restores its saved MoonProto settings; you may need to copy its connection package again. These are maintenance operations, not passive monitoring. Check `--status` after the request; an accepted change does not mean login has completed.
 
+While that status is `initializing`, another `--exchange`, `--set-api-keys` or `--retry-login` is refused. The command reports `Exchange initialization is busy. Try again after it finishes.` and leaves the saved keys as they are.
+
 For Bitget and OKX, use the passphrase reported by `--exchanges` when creating the exchange API key. For Hyperliquid, the prompts take the wallet address and signer's private key. Binance RSA uses the exported Moonbot RSA package through JSON on standard input.
 
 For automation, `--set-api-keys` also accepts a JSON object on standard input: `api_key` and `api_secret`, with optional `user_name`; or `rsa_bundle` for Binance RSA. Supply it through a protected input source, not command-line arguments or shell history.
@@ -116,6 +118,25 @@ sudo mb "$unit" --status
 
 If the command times out, inspect the journal and trading log before repeating it: the update may already be in progress.
 
+## Manage the core from MoonTerminal
+
+These controls are available in development builds after v0.65.12; that published release does not include them.
+
+In **Settings → Connections**, right-click a core with a literal, non-loopback IPv4 address. Hostnames and IPv6 addresses have no menu. If SSH access is not saved for that address, choose **Add server login…** first.
+
+After MoonTerminal identifies the installation, **Core status**, **Show log**, **Retry exchange login** and service controls are available even for a core installed outside MoonTerminal. Changing the exchange, API keys or MoonProto address, showing the connection key and **Update core** require an installation managed by MoonTerminal.
+
+- **Core status** checks exchange login, the service and the MoonProto listener separately. `Ready` means exchange login completed.
+- **Show log** displays the tail of the trading log without changing its timestamps. If that file cannot be read, it falls back to the service journal in UTC.
+- **Retry exchange login** uses the saved keys without restarting the process. Closing the window does not cancel the login. Wait for the result; a login error is not retried automatically.
+- **Start** is available for a stopped service. **Stop** and **Restart** require a running service and ask for confirmation. Positions remain on the exchange, but the stopped core cannot manage them. Start/restart success requires the MoonProto UDP listener to open; check exchange login separately in **Core status**.
+
+Changing the exchange stops strategies and then asks for the new exchange's API keys. Showing the connection key does not replace it.
+
+**MoonProto address** saves the entered IPv4 address and UDP port in the core's settings and exported connection package, keeping the existing key. The listener uses that port on all IPv4 interfaces. This terminal keeps its existing host and updates only the port. If the page reports `MoonProto was configured, but its marker and firewall rule could not be updated`, the core has already saved the change: check the firewall before reconnecting or retrying.
+
+**Update core** opens the Core updates window. Opening it does not install a build.
+
 ## When a command does not work
 
 | Message / symptom | What to do |
@@ -125,7 +146,7 @@ If the command times out, inspect the journal and trading log before repeating i
 | `The core command channel is unavailable` | Check `systemctl status`; start the intended instance if appropriate. The installed build must support local commands |
 | `Unknown command or wrong arguments` | Read `sudo mb "$unit" --help` for the selected build; check spelling and argument count |
 | `Core is busy` / `Exchange initialization is busy` | Let initialization finish and check `--status` before changing settings again |
-| Service exited with code `78` | Its configuration cannot be loaded, for example because it is password-protected or damaged. Correct the configuration; repeated restarts will not fix it |
+| Service exited with code `78` | The service does not restart itself. Read the journal and today's `logs/LOG_YYYY-MM-DD.log`. `Cannot start MoonBot: data directory is locked or inaccessible` means another copy is using this folder, or `data/lock.dat` cannot be opened. Stop the other copy, or correct access to the data folder if no other copy is running. Do not delete `lock.dat` to clear it: the running process keeps its lock, and a new start can open a different file. `password-protected or invalid configuration` in the trading log means the configuration cannot be loaded: correct it and transfer it again. Starting the service again does not remove either cause |
 | Service runs but the client cannot connect | Check MoonProto listener/error fields, the client IP/port/key and both firewalls |
 
 For support, collect the kernel's trading log for the relevant time and the service journal. Do not post API keys, SSH keys, MoonProto connection packages or the full configuration in a public chat.

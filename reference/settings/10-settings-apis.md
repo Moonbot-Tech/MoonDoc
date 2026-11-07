@@ -33,6 +33,8 @@ The API sends a **complete snapshot**. Editing an old copy can overwrite concurr
 
 Preserve unknown section tails and all unedited values. Kernel import is not a rollback transaction: sections are applied sequentially, and a later failure does not undo earlier changes. Use SDK serialization. If the expected state does not arrive, request it with `refresh_shared_config()` and compare the fields you changed; a rejected import is not a rollback guarantee. Successful import refreshes related lists/GUI state, broadcasts snapshots and saves configuration; it does not promise an immediate reconnect of every external service.
 
+For a partial JSON edit, use `SharedConfig::patch_json` with only the fields to change; arrays are replaced whole. Omitted fields retain their stored values, including nonfinite floats. Do not build a replacement snapshot from `json_values()`: it represents nonfinite floats as `null` and omits opaque future data. A numeric field cannot be cleared by sending `null`. Nonfinite replacements and values that overflow the destination type (for example, `1e100` for a 32-bit float) are rejected without changing the original snapshot. The returned patch is still local: send it and verify the kernel's returned values as above.
+
 ## Compact settings and leverage
 
 `snapshot().settings().client_settings` contains `ClientSettingsCommand`. Clone a received snapshot, edit the required field/typed view, then call `client.settings().send(settings)`. This is also a snapshot, not a single-field patch.

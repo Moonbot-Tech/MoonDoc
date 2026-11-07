@@ -54,7 +54,7 @@ The preview checks supported types and current preconditions. It is not a backte
 
 Read `strategy_list`, then `strategy_read` and `strategy_schema` for the selected core and kind. Use the schema's exact field names, types, visibility and current dynamic choices. Preserve all fields not requested by the user.
 
-`strategy_edit` changes fields on an existing strategy. `checked` and `path` are separate attributes. `apply_to_orders` explicitly requests propagation to existing orders; do not infer that the user wanted to alter an already open trade. `strategy_create` creates an unchecked strategy. Creation alone does not start it. Deleting a strategy is not a promise to close its existing positions.
+`strategy_edit` changes fields on an existing strategy. `checked` and `path` are separate attributes. `apply_to_orders` explicitly requests propagation to existing orders; do not infer that the user wanted to alter an already open trade. `strategy_create` creates an unchecked strategy. Creation alone does not start it. Deleting a strategy does not close its existing positions. The strategy must already be unchecked, and that change observed, before deletion is accepted.
 
 The native strategy API is different from text import. Do not send `##Begin_Strategy`, `Active`, `FVersion`, `K`/`M` number suffixes or `YES`/`NO` strings as native typed values. JSON booleans are booleans. The tools represent 64-bit integer field values as decimal strings to preserve precision in JavaScript clients. Other numeric fields retain their native values without UI rounding.
 
@@ -78,7 +78,7 @@ Order preview records the global emulator flag and the selected strategy's emula
 
 `order_cancel` and `order_move` recheck the order's identity, phase, relevant quantities and prices in the ActiveLib runtime before dispatch. An entry that filled while the request waited must not turn into an unintended cancellation of the exit. This local guard is not an exchange-side compare-and-swap.
 
-`panic_sell` selects one order UID and sets its flag to the requested value; it is not the market UI's toggle and does not clear stop settings.
+`panic_sell` selects one order UID that is already in the sell phase and sets its Panic Sell flag to the requested value. The same value again is rejected and sends nothing. It is not the market UI's toggle and does not clear stop settings.
 
 `position_close` requests cancellation of current orders on the market before starting closing orders, including both legs in hedge mode. A failed cancellation does not prevent the closing attempt. In ordinary mode, sells target about 2% above and buys about 2% below the core's last ask. With `aggressive_limit=true`, sells target about 4% below and buys about 4% above that ask. This flag selects requested prices; it does not guarantee a market order or a fill.
 
@@ -91,6 +91,8 @@ Order creation returns a client ticket, but the current order stream does not ec
 Use `settings_read` for the live safe-share configuration and SDK schema, including exact dot paths, types, array sizes and read-only metadata. Use [the settings index](settings/index.tsv) for units, dependencies and headless limitations.
 
 `settings_patch` names only the requested fields. The Station rebuilds the full outgoing configuration from its fresh retained base, preserving untouched values and opaque future data. It shares the existing settings writer, so a busy writer can reject the operation and ask for a new preview. Arrays are replaced as whole typed values, not patched through guessed numeric path components.
+
+A nonfinite numeric value appears in `settings_read` as JSON `null`. Omit that field to preserve it; copying `null` into the patch is rejected, not treated as a request to clear it. Nonfinite replacements and values that overflow the field's type are also rejected before sending. If all requested values already match, the result is `already_applied` and nothing is sent.
 
 The kernel imports a complete snapshot and does not provide a server-side revision lock or rollback transaction. Another terminal can still race after dispatch. A timeout does not prove that nothing changed. Read all requested fields and any affected behavior before deciding what to do next.
 
@@ -116,7 +118,7 @@ Keep core-local timestamps separate from UTC reception time. Missing messages, r
 
 ## Reports
 
-`reports_query` requires an explicit set of authorized core IDs and a UTC interval. It reads the Station's replicated reports. Compare report synchronization in `station_overview` before calling an empty or partial result the complete trading history.
+`reports_query` returns closed trades for an explicit set of authorized cores over a UTC interval. Open positions stay in `core_state` with `section=positions`. Compare report synchronization in `station_overview` before calling an empty or partial result the complete trading history.
 
 Native profit is grouped by currency. Different native currencies cannot be added directly. USDT valuation includes coverage information; report missing conversions instead of treating them as zero. Emulator trades are excluded unless explicitly requested.
 
@@ -134,10 +136,10 @@ MCP itself does not wake an absent AI chat. Continuous monitoring requires the A
 
 ## Connection and permissions
 
-On a prepared VPS, the Terminal's MCP setup button installs a dedicated HTTPS listener and certificate renewal, verifies the public endpoint and enables authorization requests. A public IP can receive a trusted short-lived certificate without buying a domain. TCP 443 must be reachable; provider firewalls or NAT may require a separate network change. An occupied HTTPS port is reported instead of replacing another web server.
+On a prepared VPS, the Terminal's MCP setup button installs a dedicated HTTPS listener and certificate renewal, restarts the Station, verifies the public endpoint and enables authorization requests. A public IP can receive a trusted short-lived certificate without buying a domain. TCP 443 must be reachable; provider firewalls or NAT may require a separate network change. An occupied HTTPS port is reported instead of replacing another web server. If MCP is already configured for a different address, setup stops: changing that address revokes clients and is a separate reconfiguration.
 
 Copy the Station's MCP URL into an AI application that supports remote MCP with OAuth. The authorization page displays a code. Enter it in the Terminal's Station AI-access page and choose the specific cores and permissions. Client names are labels supplied by the client, not proof of a provider's identity. Approve the code from the connection flow you initiated.
 
-Read, strategy edits, trading and settings changes are separate permissions enforced by the Station. The public HTTPS interface cannot approve its own access. Owner administration uses the existing private Station connection. Revoking a client or disabling AI access invalidates its authorization; enabling access again does not restore revoked clients.
+Read is required with every grant, and the grant cannot add a permission the client did not request. Strategy edits, trading and settings changes are otherwise separate permissions enforced by the Station. The public HTTPS interface cannot approve its own access. Owner administration uses the existing private Station connection. Revoking a client or disabling AI access invalidates its authorization; enabling access again does not restore revoked clients.
 
 HTTPS encrypts the connection; OAuth restricts who can use it. Neither promises that software can never have a vulnerability. Keep the Station and certificate manager updated, grant only the intended cores/actions, and use the action history to inspect admitted operations. A successful command already dispatched to a core cannot be undone by revoking a token afterward.

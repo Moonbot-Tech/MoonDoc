@@ -46,6 +46,8 @@ Open **Settings → Cores → Connect a core…**. The same wizard opens when th
 - **To use the release kernel:** install it with the Windows wizard or the manual steps below. In MoonTerminal, choose **Connect to a Moonbot core**, enter a name, paste the connection package into **Key**, and press **Connect**.
 - **To install through MoonTerminal:** choose **New core on a Linux server**, enter the SSH details, check the server, then follow the installation and exchange-key steps. Wait for exchange login and the terminal connection to complete. The current wizard downloads the latest **test build**; it does not select the full release distribution. Use the first route when you want the released version.
 
+After the core is connected, status, logs and service actions from the terminal are in [Manage the core from MoonTerminal](linux-kernel-commands.md#manage-the-core-from-moonterminal).
+
 ## Install manually over SSH
 
 These steps create a **new instance with fresh settings**. To transfer an existing bot's configuration, use the Windows wizard above.
