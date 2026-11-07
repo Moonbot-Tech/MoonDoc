@@ -49,6 +49,7 @@ The terminal connects directly via API to **Binance, Bybit, OKX, Gate.io, Bitget
 | **Study ready-made strategy configurations** | Open the [Strategy examples (`examples/strategies/`)](#part-2-ready-made-strategy-templates-examplesstrategies) library with configurations for manual, semi-automatic and automatic trading |
 | **Use the parameter reference or connect an AI** | Use the [Technical reference (`reference/`)](#part-3-technical-reference-of-parameters-and-protocols-reference) and the ready-made context for configuring strategies with AI assistants |
 | **Configure the kernel or build settings controls with MoonProto** | Open the [settings reference](reference/settings/README.md) for trading effects, units, dependencies and the correct API for each setting |
+| **Install a Linux kernel on a VPS** | [Download and installation guide](reference/linux-installation.md): Windows wizard, MoonTerminal and manual SSH setup |
 
 ---
 
@@ -149,6 +150,7 @@ A collection of working configurations in the standard Moonbot import format (`#
 
 | Reference section | Contents |
 | :--- | :--- |
+| [**Install the Linux kernel**](reference/linux-installation.md) | Full release download, VPS requirements, installation wizards, manual setup and connection checks |
 | [**Linux kernel commands**](reference/linux-kernel-commands.md) | Monitor a trading VPS, read logs, start/stop the service, configure MoonProto and update the kernel over SSH |
 | [**Kernel settings and MoonProto integration**](reference/settings/README.md) | Order sizing, leverage, loss stops, charts and service settings: meanings, units, dependencies and editing APIs; [539-field index](reference/settings/index.tsv) |
 | [**`strategy-selection-guide.md`**](reference/strategy-selection-guide.md) | **Choosing an algorithm for a trading task:** the table “Trading task &rarr; Which `SignalType` to choose &rarr; Meaning · Parameters · Template” and an overview of all 23 strategy types |
@@ -201,7 +203,7 @@ To build a settings panel, use the [kernel settings reference](reference/setting
 
 ```mermaid
 flowchart LR
-  EX["Crypto exchange APIs<br/>(Binance, Bybit, OKX, Gate, Bitget, HTX, Hyperliquid)"] <--> K["Moonbot server kernel<br/>(Windows VPS; Linux — test build)"]
+  EX["Crypto exchange APIs<br/>(Binance, Bybit, OKX, Gate, Bitget, HTX, Hyperliquid)"] <--> K["Moonbot server kernel<br/>(Windows or Linux VPS)"]
   TV["TradingView signals"] --> K
   TG["Telegram and MoonNews signals"] --> K
   K <-->|"MoonProto (UDP)"| MT["MoonTerminal<br/>(Windows · macOS · Linux)"]

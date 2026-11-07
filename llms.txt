@@ -72,6 +72,7 @@ A strategy block starts with the lines `##Begin_Strategy`, `Active=0` (or `Activ
 
 ## Diagnostics, protocols and the official website
 
+- [Install the Moonbot kernel on a Linux VPS](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/linux-installation.md): full release download, Windows and MoonTerminal wizards, manual SSH setup and connection checks.
 - [Linux kernel commands: monitoring and service management](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/linux-kernel-commands.md): `mb --status`, logs, systemctl, MoonProto setup and updates.
 - [Filter check order (filter-execution-order.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/filter-execution-order.md)
 - [Decoding `logs/LOG_YYYY-MM-DD.log` logs and exchange errors (exchange-errors-and-logs.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/exchange-errors-and-logs.md)

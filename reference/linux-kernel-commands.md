@@ -2,6 +2,8 @@
 
 Use these commands over SSH on the VPS running Moonbot. `mb` talks to a selected kernel; `systemctl` starts and stops its Linux service. A running service and a successful exchange login are separate checks.
 
+For a new VPS, start with [Download and install the Linux kernel](linux-installation.md).
+
 ## Select the kernel
 
 ```sh
@@ -88,7 +90,7 @@ There are no `mb --start`, `mb --stop` or `mb --restart` commands. Running `./Mo
 
 `--exchanges`, `--status` and the setup/login commands need the kernel to be running. Help, trading-log viewing and reading the saved connection package also work with a stopped service.
 
-Exchange selection, credential changes and `--retry-login` use the normal exchange disconnect/login sequence: strategies stop, orders go through the usual disconnect handling and clients reconnect. The kernel process stays running and keeps its MoonProto connection settings. These are maintenance operations, not passive monitoring. Check `--status` after the request; an accepted change does not mean login has completed.
+Exchange selection, credential changes and `--retry-login` use the normal exchange disconnect/login sequence: strategies stop, orders go through the usual disconnect handling and clients reconnect. The kernel process stays running. Selecting a previously configured exchange also restores its saved MoonProto settings; you may need to copy its connection package again. These are maintenance operations, not passive monitoring. Check `--status` after the request; an accepted change does not mean login has completed.
 
 For Bitget and OKX, use the passphrase reported by `--exchanges` when creating the exchange API key. For Hyperliquid, the prompts take the wallet address and signer's private key. Binance RSA uses the exported Moonbot RSA package through JSON on standard input.
 
