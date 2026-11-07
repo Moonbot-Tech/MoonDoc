@@ -78,7 +78,11 @@ Order preview records the global emulator flag and the selected strategy's emula
 
 `order_cancel` and `order_move` recheck the order's identity, phase, relevant quantities and prices in the ActiveLib runtime before dispatch. An entry that filled while the request waited must not turn into an unintended cancellation of the exit. This local guard is not an exchange-side compare-and-swap.
 
-`panic_sell` selects one order UID and sets its flag to the requested value; it is not the market UI's toggle and does not clear stop settings. `position_close` first cancels current orders on the market, then creates closing limit orders for both hedge legs. Its `aggressive_limit` option requests more aggressive crossing limits (currently about 4% versus about 2% in ordinary mode), not guaranteed market fills. Its preview also records the global emulator mode.
+`panic_sell` selects one order UID and sets its flag to the requested value; it is not the market UI's toggle and does not clear stop settings.
+
+`position_close` requests cancellation of current orders on the market before starting closing orders, including both legs in hedge mode. A failed cancellation does not prevent the closing attempt. In ordinary mode, sells target about 2% above and buys about 2% below the core's last ask. With `aggressive_limit=true`, sells target about 4% below and buys about 4% above that ask. This flag selects requested prices; it does not guarantee a market order or a fill.
+
+The core can attach its configured Manual strategy to this close flow. On Binance Futures, when `trading.use_manual_strategy`, `trading.use_stop_market` and that Manual strategy's `UseMarketStop` are enabled, an aggressive close can submit a conditional stop that waits for its trigger. Inspect these settings, the resulting order type and the remaining position. The preview records the global emulator mode but does not model this inherited stop behavior.
 
 Order creation returns a client ticket, but the current order stream does not echo that ticket as an exact server-UID correlation. Do not manufacture a match from similar price and timing. If the result is uncertain, read live orders and logs before any new instruction; repeating the request with a new preview can create another order.
 
