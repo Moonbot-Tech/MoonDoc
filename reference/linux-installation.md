@@ -13,7 +13,7 @@ The release download becomes available when 7.73 is published. If it returns `40
 | Method | What it installs | Best fit |
 | :--- | :--- | :--- |
 | [Moonbot for Windows wizard](#install-from-moonbot-for-windows) | Full Linux release | Transfer the settings of a working bot or connected kernel |
-| [MoonTerminal wizard](#use-moonterminal) | Latest Linux **test build** in the current MoonTerminal version | Set up a new test kernel from the terminal |
+| [MoonTerminal wizard](#use-moonterminal) | Full Linux release (MoonTerminal v0.65.13 or newer) | Set up a fresh kernel from the terminal without opening an SSH shell |
 | [Manual SSH installation](#install-manually-over-ssh) | Full Linux release | Set up a fresh kernel with CLI commands |
 
 The older [Moonbot for Linux package based on Wine](https://moonbot.pro/moonbot-pro/download/linux) runs the Windows desktop application. It is a separate installation route, not this native kernel.
@@ -43,8 +43,8 @@ The selected exchange, API keys, strategies and emulator mode transfer with the 
 
 Open **Settings → Cores → Connect a core…**. The same wizard opens when there are no connected kernels.
 
-- **To use the release kernel:** install it with the Windows wizard or the manual steps below. In MoonTerminal, choose **Connect to a Moonbot core**, enter a name, paste the connection package into **Key**, and press **Connect**.
-- **To install through MoonTerminal:** choose **New core on a Linux server**, enter the SSH details, check the server, then follow the installation and exchange-key steps. Wait for exchange login and the terminal connection to complete. The current wizard downloads the latest **test build**; it does not select the full release distribution. Use the first route when you want the released version.
+- **To install through MoonTerminal:** choose **New core on a Linux server**, enter the SSH details, check the server, then follow the installation and exchange-key steps. MoonTerminal v0.65.13 and newer downloads the full release distribution, selects the exchange, enables MoonProto for it, enters the API keys and waits until the exchange login and the terminal connection complete. Earlier MoonTerminal versions install the latest test build instead: update MoonTerminal first.
+- **To connect a kernel installed another way** (the Windows wizard or the manual steps below): choose **Connect to a Moonbot core**, enter a name, paste the connection package into **Key**, and press **Connect**.
 
 After the core is connected, status, logs and service actions from the terminal are in [Manage the core from MoonTerminal](linux-kernel-commands.md#manage-the-core-from-moonterminal).
 
