@@ -90,7 +90,7 @@ By default `MShotSellAtLastPrice = YES`: after the buy, the take-profit is place
 
 - Without the **“Unlimited orders”** checkbox, the terminal holds no more than **30** simultaneous shots (the limit also includes the scouts' virtual orders); the checkbox lets you set more in the `Max Orders` field — with a warning about the risk of an exchange ban; the limit is shared by all strategies of the terminal. The site advises keeping fewer than `30–35` active orders per API key, and when that is not enough — splitting the shots between keys, sub-accounts and servers.
 - Coins are taken like this: first the one that recently had a profitable trade (within `PenaltyTime` — for shots this pause also works as “stick to the lucky coin”), then the rest by `MShotSortBy` / `MShotSortDesc` — deltas, volumes, `Pump` / `Dump`, funding, leverage, `MaxOrder`, and for `MoonStrike` owners also `OrderBook` (the thinnest order books first). A coin with a closed chart gets no order when sorting by order book: its order book is not loaded.
-- Filters are checked the whole time the order stands, with the `DeltaSwitch` tolerance — hence the “blinking” shots: the coin left the filter, the limit order was canceled.
+- Filters are checked the whole time the order stands, with the `DeltaSwitch` tolerance — hence the “blinking” shots: the coin left the filter, the limit order was canceled. A `CustomEMA` condition on that same order is eased by [`EMASwitch`](01-market-selection-and-filters.md#emaswitch), which is separate from `DeltaSwitch`.
 - `AutoCancelBuy` for a shot is no less than `15` seconds and works as a periodic reshuffling of coins; a small random spread is added to the term so that orders are not canceled in one batch.
 - When the API or the processor is overloaded, the strategy skips a turn (`API or CPU overload` in the log) — a frequent answer to the question “why are shots not being placed”.
 
@@ -143,13 +143,17 @@ The hook's take-profit is counted from the spike depth, not from `SellPrice`: `H
 
 `HookRepeatAfterSell = YES` re-arms the hook after the trade closes if its profit is **strictly greater** than `HookRepeatIfProfit`: `0` — any profitable trade; a zero or losing one gives no repeat. The way of closing does not matter; with an order grid, one order is re-placed, not the grid.
 
+<a id="moonhook-rearm"></a>
+
+On a kernel labeled **7.73 N2**, an unfilled MoonHook whose buy was removed because the filters failed, or because a replace price went stale, keeps the same worker for up to 10 minutes. The log says `MoonHook waiting to rearm (up to 600 sec).` The buy is placed again after the conditions hold for two continuous seconds: a managed hook recalculates the corridor price, a fixed one keeps the price it had. `AutoCancelBuy`, an explicit cancel and a fill end the wait sooner. A restart does not resume it. The log then says `MoonHook order resumed.` or `MoonHook rearm timeout (600 sec).` The exchange min/max restriction cancels a standing strategy buy even with `CheckAfterBuy` off, and this wait is what lets the hook come back; see [filter order](../reference/filter-execution-order.md).
+
 ---
 
 ## 4. Manual hooks (“Manual MoonHook”): the trader's eye plus tracking
 
 You see a coin with live spikes on the chart and understand at what depth to catch, but moving a limit order after a running price by hand is impossible. A manual hook is a link of the `Manual` strategy and `MoonHook`: you click into the order book, the order is handed over to the hook's control, it tracks it in the corridor, after the fill places a take-profit from the click depth and, if allowed, re-arms the hook at the same distance. How it is assembled:
 
-1. **The slave `MoonHook`.** Set the corridor width `HookPriceDistance` (without it the manual hook does not work), the delays `HookReplaceDelay` / `HookRaiseWait`, the take-profit `HookSellLevel`, the stops and the line color. It does not need the detect parameters — it detects nothing.
+1. **The slave `MoonHook`.** Set the corridor width `HookPriceDistance` (with `0` the permitted order stays a plain manual order and is not tracked), the delays `HookReplaceDelay` / `HookRaiseWait`, the take-profit `HookSellLevel`, the stops and the line color. It does not need the detect parameters — it detects nothing. Placing a standalone MoonHook or a manual hook requires PRO and MoonBonus. Without them the buy is not placed, and the log says `MoonHook, including manual hooks, requires PRO and MoonBonus (RefMod); buy order will not be set.`
 2. **The `Manual` strategy.** On the `Strategy settings` tab, in the `UseHookStrategy` field, select the slave. On save, the terminal switches it to slave mode: enables `AutoBuy`, zeroes `OrderSize`, clears the start checkbox.
 3. **Enable the manual strategy.** `Menu → Manual Trading → Use Manual Strategy`, then select the needed `Manual` — by name above the chart or with a button; buttons and hotkeys are configured in `Settings → Hotkeys → Manual Strategies`.
 4. **Click into the order book.** An order with a green corridor bar appears at the chosen depth. The distance is counted from the live price, and when there are no trades — from the order book. The corridor is proportional to the click depth: the farther the order, the wider the corridor and the rarer the re-placements. The take-profit scales from the click depth and `HookSellLevel`: the deeper you caught, the higher the take-profit.

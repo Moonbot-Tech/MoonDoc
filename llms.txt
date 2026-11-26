@@ -1,20 +1,20 @@
-# Moonbot — documentation on scalping, trading algorithms and strategy parameters (v7.71, FVersion=12)
+# Moonbot — documentation on scalping, trading algorithms and strategy parameters (FVersion=12)
 
-> The official knowledge base of the Moonbot trading terminal (https://moonbot.pro). It covers scalping and autotrading algorithms, ready-made strategy templates in the `##Begin_Strategy ... ##End_Strategy` format, 484 strategy parameters, and kernel settings exposed through MoonProto.
+> The official knowledge base of the Moonbot trading terminal (https://moonbot.pro). It covers scalping and autotrading algorithms, ready-made strategy templates in the `##Begin_Strategy ... ##End_Strategy` format, 485 strategy parameters, and kernel settings exposed through MoonProto.
 
 ## Mandatory rules for generating and checking strategies
 
-For live operations through Station MCP / ActiveLib, start with the [Station MCP guide](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/station-mcp-guide.md). Use the connected core's typed schema; the text-import syntax below is a separate interface. For diagnosis, use the [log-analysis workflow](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/station-log-analysis.md).
+For live operations through Station MCP / ActiveLib, start with the [Station MCP guide](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/station-mcp-guide.md). Use the connected core's typed schema; the text-import syntax below is a separate interface. Questions about the MoonTerminal application itself — where a control is, connecting a core, installing, or what a version changed — are answered from the MoonTerminal site by the tools in that guide, not by these pages. Whether a line MoonTerminal drew by itself is an order, and which high and low it is, is answered in [chapter 07](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/07-kernel-vps-and-infrastructure.md#kernel-and-client-who-does-what): **Auto figures** on **Main tabs** are not sent to the core. The current Main chart opens with the high and low of the last 24 hours. For diagnosis, use the [log-analysis workflow](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/station-log-analysis.md).
 
 Before composing or analyzing a strategy, read these three documents:
 - [AI guide and default values (AI_GUIDE.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/AI_GUIDE.md): the mandatory structure of the `##Begin_Strategy ... ##End_Strategy` block, dangerous defaults when lines are omitted, and the verification checklist.
 - [Strategy type selection guide by task (strategy-selection-guide.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/strategy-selection-guide.md): the table “Trading task → Which SignalType to choose → Meaning · Parameters · Template” and an overview of all 23 `SignalType` values.
 - [Common configuration mistakes and traps (silent-killers-and-traps.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/silent-killers-and-traps.md): incompatible parameter combinations across tabs and how to diagnose them.
 
-## Parameter reference by tab (484 parameters, FVersion=12)
+## Parameter reference by tab (485 parameters, FVersion=12)
 
 For a targeted parameter lookup, load only the thematic section you need instead of the whole base:
-- [Alphabetical tabular index of all 484 parameters (index.tsv)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/index.tsv): `ParamName`, `Tab`, `Type`, `Default`, `File`, `ShortMeaning`. Parameter names are case-sensitive (`buyPrice`, not `BuyPrice`).
+- [Alphabetical tabular index of all 485 parameters (index.tsv)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/index.tsv): `ParamName`, `Tab`, `Type`, `Default`, `File`, `ShortMeaning`. Parameter names are case-sensitive (`buyPrice`, not `BuyPrice`).
 - [Overview of parameter interaction by trade phase (parameters-by-lifecycle.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/parameters-by-lifecycle.md): the `Requires / Overrides / Disabled by` matrix.
 - [01. Coin lists and market selection filters (01-filters-and-coins.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/01-filters-and-coins.md): `CoinsWhiteList`, `DynWL/DynBL`, `Ignore*`, `CustomEMA`, `Volume`, `Delta`, `Price`, `Time`, `Ping`.
 - [02. Detect algorithm parameters by strategy type (02-detectors-and-signals.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/params/02-detectors-and-signals.md): separate sections for `MoonShot`, `MoonHook`, `UseHookStrategy`, `MoonStrike`, `Spread`, `Pumps`, `Drops`, `Walls`, `WallsDetection`, `Activity`, `Volumes`, `Waves`, `Delta`, `Liquidations`, `Combo`, `TopMarket`, `Watcher`.
@@ -30,7 +30,7 @@ For a targeted parameter lookup, load only the thematic section you need instead
 Global kernel settings are separate from strategy parameters. Start from a received settings snapshot, preserve unedited fields and unknown tails, and check returned values after saving. GUI bounds and units are field-specific; do not infer them from Rust types or SDK defaults.
 
 - [Settings overview](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/README.md): task-based navigation, units and setting dependencies.
-- [SDK field index](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/index.tsv): all 539 public fields in 34 SharedConfig structures, their types and exact documentation anchors; includes saved state and reserved fields.
+- [SDK field index](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/index.tsv): all 540 public fields in 34 SharedConfig structures, their types and exact documentation anchors; includes saved state and reserved fields.
 - [Startup and protection](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/01-startup-and-protection.md): loss windows, exchange-response time, API errors, working hours and automatic recovery.
 - [Signals and alerts](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/02-signals-and-alerts.md): Telegram and clipboard parsing, automatic entry switches, sounds and saved filters.
 - [Trading and leverage](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/settings/03-trading-and-leverage.md): order amounts, entry/exit defaults, pending-order spread, leverage targets and margin policy.
@@ -63,7 +63,7 @@ A strategy block starts with the lines `##Begin_Strategy`, `Active=0` (or `Activ
 - [05. CustomEMA formulas: conditions on price, volumes, extremes and arbitrage](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/05-ema-geometry-and-formulas.md)
 - [06. Position management and risk control: orders, grids, take-profits and stop losses](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/06-orders-exits-and-stops-cascade.md)
 - [07. Moon Kernel, a trading VPS, the control bot and working with exchanges](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/07-kernel-vps-and-infrastructure.md)
-- [08. Testing and debugging strategies: Filters on charts, the Pencil, Emulator, BackTest, reports and the “why it does not buy” checklist](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/08-testing-debugging-and-analytics.md)
+- [08. Testing and debugging strategies: Filters on charts, the Pencil, Emulator, BackTest, reports, strategy version history and the “why it does not buy” checklist](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/concepts/08-testing-debugging-and-analytics.md)
 
 ## Performance and engineering examples
 
@@ -73,7 +73,7 @@ A strategy block starts with the lines `##Begin_Strategy`, `Active=0` (or `Activ
 ## Diagnostics, protocols and the official website
 
 - [Install the Moonbot kernel on a Linux VPS](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/linux-installation.md): full release download, Windows and MoonTerminal wizards, manual SSH setup and connection checks.
-- [Linux kernel commands: monitoring and service management](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/linux-kernel-commands.md): `mb --status`, logs, systemctl, MoonProto setup and updates.
+- [Linux kernel commands: monitoring and service management](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/linux-kernel-commands.md): `mb --status`, logs, systemctl, MoonProto setup, a core's outgoing IP and updates.
 - [Filter check order (filter-execution-order.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/filter-execution-order.md)
 - [Decoding `logs/LOG_YYYY-MM-DD.log` logs and exchange errors (exchange-errors-and-logs.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/exchange-errors-and-logs.md)
 - [MoonCMD UDP remote control protocol (mooncmd-udp-protocol.md)](https://raw.githubusercontent.com/Moonbot-Tech/MoonDoc/main/reference/mooncmd-udp-protocol.md)

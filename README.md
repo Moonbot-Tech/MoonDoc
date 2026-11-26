@@ -11,9 +11,9 @@
 </p>
 
 <p align="center">
-  <a href="https://moonbot.pro"><img src="https://img.shields.io/badge/Moonbot-Windows%20(Linux%20Wine)-4C6EF5" alt="Download Moonbot: Windows (Linux via Wine)"></a>
-  <a href="https://github.com/Moonbot-Tech/MoonTerminal"><img src="https://img.shields.io/badge/MoonTerminal%20(dev)-Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-4C6EF5" alt="MoonTerminal (in development): Windows · macOS · Linux"></a>
-  <a href="https://moonbot.pro/news/releases"><img src="https://img.shields.io/badge/version-7.71-1971C2" alt="Version: 7.71"></a>
+  <a href="https://moonbot.pro"><img src="https://img.shields.io/badge/Moonbot-Windows%20%C2%B7%20Linux-4C6EF5" alt="Download Moonbot: Windows terminal and Linux kernel"></a>
+  <a href="https://moonterminal.pro/"><img src="https://img.shields.io/badge/MoonTerminal-Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-4C6EF5" alt="MoonTerminal: Windows · macOS · Linux"></a>
+  <a href="https://moonbot.pro/news/releases"><img src="https://img.shields.io/badge/releases-latest-1971C2" alt="Latest Moonbot releases"></a>
   <a href="https://moonbot.pro/moonbot-pro"><img src="https://img.shields.io/badge/editions-Demo%20%C2%B7%20Free%20%C2%B7%20PRO-2B8A3E" alt="Editions: Demo · Free · PRO"></a>
   <a href="https://t.me/MoonBotNews"><img src="https://img.shields.io/badge/telegram-MoonBotNews-229ED9" alt="Telegram: MoonBotNews"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY%204.0%20%C2%B7%20MIT-868E96" alt="License: CC BY 4.0 · MIT"></a>
@@ -129,7 +129,7 @@ The knowledge base in this repository is split into two complementary parts:
 | [**`05. CustomEMA formulas and cross-exchange arbitrage`**](concepts/05-ema-geometry-and-formulas.md) | How to build your own entry and exit conditions from chart geometry: comparing average prices over seconds, minutes and hours, finding breakouts of local highs and lows, estimating volume acceleration and comparing the coin's price on other exchanges and venues (Binance, Bybit, OKX, Gate, Bitget, HTX, Hyperliquid, UpBit — spot and futures) |
 | [**`06. Orders, averaging grids, take-profits and stop losses`**](concepts/06-orders-exits-and-stops-cascade.md) | The full position management cycle and risk management: virtual pending orders, order grids (`MultiOrders`), take-profit tracking (`SellLevel` relative to a recent high, dynamic `SellShot`, `SellSpread`), a cascade of three stop losses, moving to breakeven and the trailing stop |
 | [**`07. Server-side Moon Kernel, VPS and working with exchanges`**](concepts/07-kernel-vps-and-infrastructure.md) | Setting up round-the-clock trading with minimal ping to the exchange: splitting into the server kernel (`Moon Kernel`) on a VPS and the client interface on a PC, accelerated chart delivery with `Moon Streamer` for manual trading, the control bot and staying within API limits on different exchanges |
-| [**`08. Testing and debugging strategies: Filters on charts, the Pencil, Emulator, BackTest and reports`**](concepts/08-testing-debugging-and-analytics.md) | How to test and refine strategies: checking in Emulation mode on the live market, modeling price movement with the Pencil (draw only in the global Emulation mode, otherwise live strategies will respond to the drawing with real orders), running on historical tick data in `BackTest` and analyzing execution delays from the logs |
+| [**`08. Testing and debugging strategies: Filters on charts, the Pencil, Emulator, BackTest and reports`**](concepts/08-testing-debugging-and-analytics.md) | How to test and refine strategies: checking in Emulation mode on the live market, modeling price movement with the Pencil (draw only in the global Emulation mode, otherwise live strategies will respond to the drawing with real orders), running on historical tick data in `BackTest`, reading strategy version history and analyzing execution delays from the logs |
 
 ### Part 2. Ready-made strategy templates (`examples/strategies/`)
 
@@ -151,10 +151,10 @@ A collection of working configurations in the standard Moonbot import format (`#
 | Reference section | Contents |
 | :--- | :--- |
 | [**Install the Linux kernel**](reference/linux-installation.md) | Full release download, VPS requirements, installation wizards, manual setup and connection checks |
-| [**Linux kernel commands**](reference/linux-kernel-commands.md) | Monitor a trading VPS, read logs, start/stop the service, configure MoonProto and update the kernel over SSH |
-| [**Kernel settings and MoonProto integration**](reference/settings/README.md) | Order sizing, leverage, loss stops, charts and service settings: meanings, units, dependencies and editing APIs; [539-field index](reference/settings/index.tsv) |
+| [**Linux kernel commands**](reference/linux-kernel-commands.md) | Monitor a trading VPS, read logs, start/stop the service, configure MoonProto, choose a core's outgoing IP and update the kernel over SSH |
+| [**Kernel settings and MoonProto integration**](reference/settings/README.md) | Order sizing, leverage, loss stops, charts and service settings: meanings, units, dependencies and editing APIs; [540-field index](reference/settings/index.tsv) |
 | [**`strategy-selection-guide.md`**](reference/strategy-selection-guide.md) | **Choosing an algorithm for a trading task:** the table “Trading task &rarr; Which `SignalType` to choose &rarr; Meaning · Parameters · Template” and an overview of all 23 strategy types |
-| [**`parameters-by-lifecycle.md`**](reference/parameters-by-lifecycle.md) and [**`params/01..08.md`**](reference/params/) | The complete reference of 484 strategy parameters, split into 8 compact thematic sections by terminal tab and trade stage (with a [quick index `params/index.tsv`](reference/params/index.tsv)) |
+| [**`parameters-by-lifecycle.md`**](reference/parameters-by-lifecycle.md) and [**`params/01..08.md`**](reference/params/) | The complete reference of 485 strategy parameters, split into 8 compact thematic sections by terminal tab and trade stage (with a [quick index `params/index.tsv`](reference/params/index.tsv)) |
 | [**`AI_GUIDE.md`**](reference/AI_GUIDE.md) | **Guide to generating and checking strategies:** base default parameter values, mandatory config formatting rules and a pre-launch checklist |
 | [**`filter-execution-order.md`**](reference/filter-execution-order.md) | The order in which market, volume, delta and session filters are checked during coin selection and before placing an order |
 | [**`silent-killers-and-traps.md`**](reference/silent-killers-and-traps.md) | Common configuration mistakes that stop a strategy from placing orders or make it behave unexpectedly, and how to fix them quickly |
@@ -189,12 +189,14 @@ cargo run --example trades_stream -- "<MOONBOT_KEY>" 127.0.0.1:3500 BTCUSDT
 
 To build a settings panel, use the [kernel settings reference](reference/settings/README.md) for field meanings and dependencies, and [choosing the settings API](reference/settings/10-settings-apis.md) for reading, saving and checking the result.
 
-### MoonTerminal: a cross-platform interface built on MoonProto
+### MoonTerminal: a desktop interface built on MoonProto
 
-[**MoonTerminal**](https://github.com/Moonbot-Tech/MoonTerminal) is a new graphical terminal (in active development) written in Rust (`GPUI`) on top of the `MoonProto` protocol. It builds natively for **Windows, macOS and Linux**, renders tick charts and order books on the GPU (`DirectX 11`, `Metal`, `wgpu`) and lets you manage **several remote Moonbot kernels from one window**. The classic, production-ready **Moonbot** terminal runs on **Windows** (and on **Linux via Wine**).
+[**MoonTerminal**](https://moonterminal.pro/) brings charts, orders, reports and strategies from several Moonbot cores into one desktop window. The cores place orders and keep trading when the desktop client closes. Current downloads support **Windows**, **macOS** and **x86-64 Linux**; the site provides installation instructions, an interface guide and FAQ.
+
+MoonTerminal's chart figures help with visual analysis and remain local to the terminal. They do not place orders or become inputs to core strategies; see [kernel and client roles](concepts/07-kernel-vps-and-infrastructure.md#kernel-and-client-who-does-what). For server trading, install the [native Linux core](reference/linux-installation.md) or use the Windows Moonbot terminal as a core.
 
 <p align="center">
-  <a href="https://github.com/Moonbot-Tech/MoonTerminal">
+  <a href="https://moonterminal.pro/">
     <img src="assets/moonterminal-main.png" width="840" alt="MoonTerminal trading interface with charts, orders, reports and assets">
   </a>
 </p>
@@ -206,7 +208,7 @@ flowchart LR
   EX["Crypto exchange APIs<br/>(Binance, Bybit, OKX, Gate, Bitget, HTX, Hyperliquid)"] <--> K["Moonbot server kernel<br/>(Windows or Linux VPS)"]
   TV["TradingView signals"] --> K
   TG["Telegram and MoonNews signals"] --> K
-  K <-->|"MoonProto (UDP)"| MT["MoonTerminal<br/>(Windows · macOS · Linux)"]
+  K <-->|"MoonProto (UDP)"| MT["MoonTerminal<br/>(Windows · macOS; Linux x86_64 after v0.66.0)"]
   K <-->|"MoonProto (UDP)"| CL["Classic Moonbot terminal<br/>(Windows PC)"]
   K <-->|"MoonProto (Rust SDK) / MoonCMD (UDP)"| APP["External applications<br/>(dashboards, analytics, Python scripts)"]
 ```
@@ -238,7 +240,7 @@ My task: [describe your trading idea, attach the strategy text or a question]
 
 | Repository | Purpose | Language and license |
 | :--- | :--- | :--- |
-| [**Moonbot-Tech/MoonTerminal**](https://github.com/Moonbot-Tech/MoonTerminal) | Native cross-platform trading terminal (in development) with GPU chart rendering for Windows, macOS and Linux | Rust |
+| [**Moonbot-Tech/MoonTerminal**](https://github.com/Moonbot-Tech/MoonTerminal) | Desktop shell for Moonbot cores, in development. Published installers through v0.66.0 are Windows and macOS; a newer release adds `MoonTerminal-linux-x86_64`. A Linux window can also be built from this source. GPU charts | Rust |
 | [**Moonbot-Tech/MoonProto**](https://github.com/Moonbot-Tech/MoonProto) | Client Rust SDK for building terminals, dashboards and control tools on top of the Moonbot kernel | Rust &middot; Apache-2.0 |
 | [**Moonbot-Tech/MoonUI**](https://github.com/Moonbot-Tech/MoonUI) | GPUI-based UI component library for MoonTerminal | Rust &middot; Apache-2.0 |
 | [**Moonbot-Tech/MoonCompiler**](https://github.com/Moonbot-Tech/MoonCompiler) | Compiler toolchain for Linux server builds | Pascal &middot; GPL-2.0+ (compiler) / LGPL-2.1+ with static linking exception (RTL/packages, see [`doc/LICENSING.md`](https://github.com/Moonbot-Tech/MoonCompiler/blob/main/doc/LICENSING.md)) |
@@ -246,6 +248,7 @@ My task: [describe your trading idea, attach the strategy text or a question]
 ## Official resources and community
 
 * [**Official website and terminal download**](https://moonbot.pro) &middot; [**Documentation**](https://moonbot.pro/documentation) &middot; [**MoonAcademy training**](https://moonbot.pro/education)
+* [**MoonTerminal**](https://moonterminal.pro/) — downloads, the interface guide and FAQ
 * [**News and updates channel (`@MoonBotNews`)**](https://t.me/MoonBotNews) &middot; [**User trades (`@MoonBot_Profit`)**](https://t.me/MoonBot_Profit) &middot; [**Public statistics (`stat.moonbot.pro`)**](https://stat.moonbot.pro)
 
 ---

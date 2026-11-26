@@ -25,7 +25,7 @@ Field names are the exact MoonProto names; paths are relative to `SharedConfig`.
 
 Amounts described as **trading currency** use the currency selected for that market/account. For BTC/USDT spot or USDT-margined futures, this is USDT, not the BTC base asset. Inverse-contract balance and settlement amounts follow the account's contract mode; do not assume every monetary field is USD. A row that explicitly says USD equivalent has its own conversion.
 
-The catalog covers **539 public fields in 34 SharedConfig structures**, plus supported INI keys and separate service APIs. That includes nested records, saved interface state and compatibility fields, not 539 independent controls. Preserve inactive fields, learned values and unknown tails when editing a received snapshot.
+The catalog covers **540 public fields in 34 SharedConfig structures**, plus supported INI keys and separate service APIs. That includes nested records, saved interface state and compatibility fields, not 540 independent controls. Preserve inactive fields, learned values and unknown tails when editing a received snapshot.
 
 ## Settings that look alike but do different jobs
 

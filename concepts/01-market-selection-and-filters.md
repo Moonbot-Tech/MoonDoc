@@ -103,6 +103,16 @@ That is why, by default, the longer deltas are built on the smoothed price rathe
 
 While a strategy's order sits in the order book, the market keeps moving, and the coin may leave the delta boundary for a moment and come back. So that the order is not canceled and re-placed on every such jitter, while the order is held the delta boundaries widen by `±DeltaSwitch`: the coin is taken in the interval from `X` to `Y` and stays in work in the interval from `X − DeltaSwitch` to `Y + DeltaSwitch`. This matters for `MoonShot`, whose order sits in the order book permanently, and for any strategy with `CheckAfterBuy = YES`.
 
+<a id="emaswitch"></a>
+
+### CustomEMA tolerance while a MoonShot order is held: `EMASwitch`
+
+`DeltaSwitch` widens delta bounds. A `CustomEMA` formula has its own tolerance, `EMASwitch`, and only on `MoonShot`, and only while that order is already standing. Placement and the check immediately before it still use the thresholds written in the formula.
+
+For every condition except `Vol`, the tolerance is in percentage points, the same unit as the threshold: a `>` threshold is lowered, a `<` threshold is raised. `Vol` moves by that many percent of the absolute threshold. At `0.1`, `EMA(…) > 1` keeps the order while the value stays above `0.9`, and `Vol(…) > 100000` keeps it above `99900`. The same percentage-point easing applies to `BTC`, `MAvg` and `Arb`. `0` leaves the written thresholds in force; a negative value is stored as `0`. Collector thresholds (`> -888`, `< 888`, and `Vol > 0`) skip the comparison, so this tolerance does not change them.
+
+The field sits on `Filters` / `Base`, next to `CustomEMA`, and the editor shows it for `MoonShot` only. Replace delays and strategy pauses stay as they are set. `SellByCustomEMA` keeps the threshold written in that field. The formula still requires the Autotrading module or the global emulator, and `IgnoreFilters` or `IgnoreBase` still skips it. The Windows build labeled **7.73 N1** (10.11.2026) includes the field. The core applies its saved value. An older client that does not show the field does not disable a tolerance already configured on a supporting core. Where the formula sits in the trade is in [chapter 05](05-ema-geometry-and-formulas.md).
+
 ---
 
 ## 4. Market context: Bitcoin and the average altcoin delta

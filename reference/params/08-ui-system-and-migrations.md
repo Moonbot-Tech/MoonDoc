@@ -13,10 +13,10 @@ This group sets the strategy's name and working algorithm (`SignalType`), the re
 
 | Parameter | Type · Default | Meaning, formula and key interactions |
 | :--- | :--- | :--- |
-| **`StrategyName`** | `string · ''` | Unique name of the strategy. The name lookup in `Combo` and `UseHookStrategy` links is case-insensitive. |
+| **`StrategyName`** | `string · ''` | Name of the strategy. `Combo` and `UseHookStrategy` look it up without regard to case. The kernel can store two strategies under one name; what that does to those links, and the refusal on Station MCP in published MoonTerminal v0.66.0, is in the [Station guide](../station-mcp-guide.md#strategies). |
 | **`Comment`** | `string · ''` | Free-form text note for the strategy (does not affect trading). |
 | **`SignalType`** | `string · 'DropsDetection'` | The strategy's working detect algorithm (one of 23 types). When the type is changed in the editor, the fields of the other algorithms are kept in the profile in an inactive state. |
-| **`LastEditDate`** | `string · ''` | Date and time the strategy was last saved (filled in by the terminal automatically). |
+| **`LastEditDate`** | `string · ''` | Date and time the strategy was last saved, `yyyy-mm-dd hh:nn`, filled in by the terminal. In MoonTerminal through published **v0.65.13**, a copy saved from [Strategy Tuning](../../concepts/08-testing-debugging-and-analytics.md#the-strategy-tuner-in-moonterminal) keeps the source strategy's date. Published **v0.66.0** writes the current minute on the target core's wall clock, or in this computer's time zone when that core's offset has never been measured. The version list's time is a separate observation ([chapter 08](../../concepts/08-testing-debugging-and-analytics.md#strategy-version-history)). |
 | **`ChannelName`** | `string · ''` | Only for `Telegram`: the name of the monitored Telegram channel. The special value `MoonNews` connects the Moon News system news feed (requires an active subscription on the kernel). |
 | **`ChannelKey`** | `string · ''` | Only for `Telegram`: the signal keyword (`buy`, `moon_1..moon_20`). For the `MoonNews` channel — a list of categories without `#`, separated by commas or spaces (`Listing`, `Delisting`, etc.; an empty field accepts any news; enabling `MultiTokens=YES` is recommended). |
 | **`AcceptCommands`** | `bool · NO` | For `Telegram` and `UDP`: allow receiving Trust Management text commands (`buy`, `sell`, `stop`, `short:`, etc.). For `Telegram` the commands are accepted only from the `ChannelName` channel (and with the `ChannelKey` key, if set), for `UDP` — from signal packets. |
@@ -63,6 +63,10 @@ The main rule: the `FVersion=12` line must come **immediately after** `Active=�
 | `FVersion < 9` | `HookAntiPump` is forced to `YES` | A deliberately disabled anti-pump in `MoonHook` turns back on |
 | `FVersion = 10` (exactly) | `MShotReplaceDelay` and `HookReplaceDelay` are divided by `1000` (milliseconds → seconds) | Text without a version line does not fall under this rule: its delays stay as written |
 | `FVersion < 12` | `TokenTags` is read as `BinanceTokenTags` | — |
+
+The core runs the same `FVersion < 7`, `< 8` and `< 9` conversions when a strategy arrives over MoonProto with a format number below the threshold, and then stores the strategy at format 12. The delay rescaling and the `TokenTags` rename happen while reading text, not on that check.
+
+Published MoonTerminal **v0.65.13** sends format 1 for every strategy created through Station MCP. It sends format 0 for the first strategy placed from the terminal onto a core that holds none. Either way the core applies those conversions before it stores format 12. On a MoonShot the buy key comes back as 0, so a Master → Slave link that depended on `TriggerKeyBuy` is missing until you set the key on the stored strategy and read it back. On a MoonHook, `HookAntiPump` is forced on. A later strategy placed from the terminal onto a core that already holds some uses the highest format those strategies carry. Published **v0.66.0** sends format 12 when the core holds none, including for the MCP create, so this conversion does not run.
 
 **Only when loading a strategy profile file (not when pasting text):** `TrailingPersent` is read as `TrailingPercent`; `TriggerOnProfit` / `TriggerOnLoss` — as `TriggerKeyProfit` / `TriggerKeyLoss`; the old integer `FastShotAlgo=0` is read as `YES`. Text pasted from a chat with such lines **loses** these values.
 

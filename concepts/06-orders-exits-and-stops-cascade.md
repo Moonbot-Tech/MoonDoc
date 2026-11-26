@@ -36,7 +36,29 @@ The terminal does not send market orders without a price. The `Buy` order is alw
 
 ### While the order waits in the order book
 
-`AutoCancelBuy` cancels an unfilled order after the specified number of seconds (zero — do not cancel; for `MoonShot` not less than 15 seconds; moving the order restarts the countdown, except for the shot strategies). By default this is 300 seconds, and the same applies to pending orders — see below. `CheckAfterBuy` keeps checking the filters the whole time of waiting and cancels the order if the coin has left the corridor ([chapter 01](01-market-selection-and-filters.md), section 6). `CancelBuyAfterSell = YES` removes the strategy's remaining orders on the coin as soon as its take-profit has filled — so that after a bounce you do not buy back what you have just sold. The limits on simultaneous trades (`MaxActiveOrders`, `MaxOrdersPerMarket`, `MaxMarkets`, `OneOrderPerMarket`) are in the [reference](../reference/params/03-buy-and-modifiers.md).
+`AutoCancelBuy` cancels an unfilled order after the specified number of seconds (zero — do not cancel; for `MoonShot` not less than 15 seconds; moving the order restarts the countdown, except for the shot strategies). By default this is 300 seconds, and the same applies to pending orders — see below. `CheckAfterBuy` keeps checking the filters the whole time of waiting and cancels the order if the coin has left the corridor ([chapter 01](01-market-selection-and-filters.md), section 6). On a kernel labeled 7.73 N2 the exchange min/max restriction cancels a standing strategy buy even when that checkbox is off; an unfilled MoonHook can place it again ([chapter 03](03-spike-hunting-mechanics.md#moonhook-rearm)). `CancelBuyAfterSell = YES` removes the strategy's remaining orders on the coin as soon as its take-profit has filled — so that after a bounce you do not buy back what you have just sold. The limits on simultaneous trades (`MaxActiveOrders`, `MaxOrdersPerMarket`, `MaxMarkets`, `OneOrderPerMarket`) are in the [reference](../reference/params/03-buy-and-modifiers.md).
+
+**Cancel entry orders on exit** is off by default. On a normal shutdown of this core it cancels the core's own entry orders, including manual ones and the unfilled remainder of a partial fill, and pending entries are not restored after restart. Positions stay open. Closing only the client, a relogin, and a bot that is itself a MoonProto client do not run it. The checkbox and the older-core case are in [startup settings](../reference/settings/01-startup-and-protection.md#autostartconfig2-cancel-buys-on-exit).
+
+**Force cancel** is for an order the ordinary cancel does not finish. On the build labeled 7.73 N2, right-click an active order in the orders list and choose **Force cancel order**. The question says the bot stops tracking the order and keeps cancelling it in the background, so the order can remain open on the exchange. After you confirm, check the exchange. The bot refuses while the order is being joined or split. A pending entry uses the ordinary cancel. A MoonTerminal build from source after published v0.69.2 offers **Force cancel…** on an active buy or sell when the core reports that build. **Sent** means the request was queued. An older core shows the row disabled.
+
+**Cancel entries on the exchange.** Moonbot's Markets Table button **Cancel ALL orders** reads the exchange's open-order list. It can therefore reach orders absent from the local screen, including orders placed on the website. A pending `BuyStop` or `BuyLimit` that has not been sent to the exchange stays; markets this core does not know are skipped. A failed list request cancels nothing.
+
+The selection depends on the exchange:
+
+| Market | Orders the command preserves |
+| :--- | :--- |
+| Binance spot | This core's recognized exit orders; for other orders, exchange-side sells |
+| HTX | Exchange-side sells |
+| Futures, and spot on Bybit, OKX, Gate, Bitget and Hyperliquid | Only this core's recognized exit orders; another bot's or a website order can be cancelled even when it closes a position |
+
+Entry/exit is not the same as buy/sell. A short's entry sells and its exit buys. Where this command protects the core's exit orders, its short take-profit is preserved too. Cancelling an unfilled order does not close the position that has already filled.
+
+**This command reaches the real exchange account even when the core's emulator is on.** Check the exchange's resulting orders; a sent notification is not confirmation of cancellation.
+
+A MoonTerminal source build after **v0.69.2** exposes the same request as **Cancel entries on exchange** in **Core settings**, opened by the gear beside the core name. It requires a connected core reporting 7.73 N1 support. The first click asks for confirmation and names the core; a second click on the same button sends. Losing the connection or switching to the adjacent **Cancel all orders** clears that confirmation. The adjacent button is a different command; it does not use the selection above. Published v0.69.2 has no **Cancel entries on exchange** button.
+
+When a manual entry, or a move of one, asks for a price outside the exchange minimum or maximum, the core places the order at that limit. For about three seconds the open chart of that coin shows the allowed range and the price you asked for. Rounding to the tick, and a refusal from the exchange, do not draw it. On a MoonProto client the core sends at most about one such notice every two seconds for the whole core, so a second market corrected inside that window may not reach the terminals; the core's own charts show each correction. A MoonTerminal build from source after published v0.69.2 draws the same notice on the chart of that core and market and fades it out over three seconds.
 
 ### Pending orders `BuyStop` and `BuyLimit`
 

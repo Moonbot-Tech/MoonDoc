@@ -57,6 +57,7 @@ AutoStartConfig2.btc_higher_then	f64	01-startup-and-protection.md#autostartconfi
 AutoStartConfig2.btc_lower_then	f64	01-startup-and-protection.md#autostartconfig2-btc-lower-then
 AutoStartConfig2.market_higher_then	f64	01-startup-and-protection.md#autostartconfig2-market-higher-then
 AutoStartConfig2.show_old_listing	bool	01-startup-and-protection.md#autostartconfig2-show-old-listing
+AutoStartConfig2.cancel_buys_on_exit	bool	01-startup-and-protection.md#autostartconfig2-cancel-buys-on-exit
 AutoStartConfig2.reset_session	bool	01-startup-and-protection.md#autostartconfig2-reset-session
 AutoStartConfig2.max_session_cap	i32	01-startup-and-protection.md#autostartconfig2-max-session-cap
 AutoStartConfig2.rs_hours	i32	01-startup-and-protection.md#autostartconfig2-rs-hours

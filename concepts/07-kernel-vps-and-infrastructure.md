@@ -25,16 +25,27 @@ In a client connected to the kernel, latency is shown as two numbers — for exa
 
 ### Kernel and client: who does what
 
-The kernel (the **Kernel (VPS)** checkbox in the `Moon Proto` window, opened via `Menu → Moon Kernel`) holds the connection to the exchange, receives trades and order books, calculates filters and detects of **all ticked strategies** — regardless of `AutoBuy` — places and re-places orders, manages positions by take-profit, stop and trailing, stores sessions and triggers. The client (the **Terminal** checkbox) draws charts and order books, takes your clicks and strategy edits and passes them to the kernel. The client's access to the kernel is protected by a key (`New Key` on the kernel → `Copy Key` → `Paste Key` on the client); commands and private data go over UDP encrypted; only public reference data — the market list and candles — is transmitted in the open. The functionality is available in PRO and in Free with the MoonBonus module.
+The kernel (the **Kernel (VPS)** checkbox in the `Moon Proto` window, opened via `Menu → Moon Kernel`) holds the connection to the exchange, receives trades and order books, calculates filters and detects of **all ticked strategies** — regardless of `AutoBuy` — places and re-places orders, manages positions by take-profit, stop and trailing, stores sessions and triggers. The client (the **Terminal** checkbox) draws charts and order books, takes your clicks and strategy edits and passes them to the kernel. The client's access to the kernel is protected by a key. On the kernel, if there is no key yet, press **New Key** before you change the port or the **Kernel (VPS)** tick; then **Apply**, **Copy Key**, and paste that key on the client. **New Key** reloads the Moon Proto window from the last applied settings and drops a port or tick that has not been applied. The full order is in [connect by key](../reference/linux-installation.md#connect-by-key). Commands and private data go over UDP encrypted; only public reference data — the market list and candles — is transmitted in the open. The functionality is available in PRO and in Free with the MoonBonus module.
 
 What follows from this for the trader:
 
 - **A closed laptop stops nothing.** Strategies, stops and trailing live on the kernel; the client can be switched off at any moment. On the next connection the kernel itself sends the current orders and state. Trades made by the kernel without the client do not get into the client's report — look at the report for them on the kernel.
-- **The source of truth is the kernel.** Enabled a strategy from one client — it is enabled on the kernel and on all other clients; strategy edits go to the kernel and from there to everyone. Several clients can be connected to one kernel — the classic Moonbot and the cross-platform [MoonTerminal](https://github.com/Moonbot-Tech/MoonTerminal) at the same time.
+- **The source of truth is the kernel.** Enabled a strategy from one client — it is enabled on the kernel and on all other clients; strategy edits go to the kernel and from there to everyone. Several clients can be connected to one kernel — the classic Moonbot and [MoonTerminal](https://moonterminal.pro/) at the same time. MoonTerminal v0.69.2 provides Windows, macOS and x86-64 Linux downloads.
 - **The kernel is always ready to trade.** At startup and after settings are applied from the client, it enables autostart, autodetect and strategies by itself. The Moonbot client cannot create manual pending orders from the chart in kernel mode — for a conditional entry use a strategy with `BuyStop` / `BuyLimit` ([chapter 06](06-orders-exits-and-stops-cascade.md)).
 - **Updating from the client updates everything.** Launching an update on the client updates the kernel and all connected clients — the terminal and kernel versions do not diverge.
 - **Time zones must match** on the kernel and the client, otherwise the funding time on the client shows as zero.
 - **The Pencil in the pair draws on the kernel**, and what is drawn is seen by all the kernel's strategies — more on this in [chapter 08](08-testing-debugging-and-analytics.md).
+- **MoonTerminal's own levels are not the Pencil.** **Auto figures** are lines MoonTerminal draws on that chart only. They are not orders and are not sent to the core, so a strategy does not see them. **Pin as figure** copies a line into that chart's local figures at full opacity. The copy starts with no alert and is not shared, and the automatic line remains. A two-line pattern copies as two figures.
+
+### MoonTerminal auto figures
+
+In **MoonTerminal v0.69.2**, a fresh **Main** chart starts with **Levels 1h** and **24h high and low**. The latter uses closed five-minute bars over the rolling last 24 hours; it is not the UTC calendar day. Saved rows keep their settings. A saved UTC-day row still shows **Day high** and **Day low**.
+
+Use **Show auto figures** to turn the configured set on or off without deleting its rows. The eye at the bottom left of a chart temporarily overrides visibility for that coin until you change market. If a saved chart layout has no eye, add **Auto figures button** in **Chart labels**. **AddToChart** and **Comparisons** start with their figures off; their prepared set also includes **Trend lines 1h** and **Squeeze**. The **Trade window** does not draw auto figures. More presets are available through **Add**. A row needs enough price history for its calculation; an incomplete history can leave it undrawn.
+
+By default, hold **Ctrl** (**Command** on macOS) to interact with a line, open its details or use its menu. Without the key, right-drag zooms the chart. Turn off **Lines react to the mouse only with Ctrl** if you want to interact with lines directly.
+
+The Screener's **Auto figures → Calculate** evaluates enabled Main rows from the locally cached candles, even when chart visibility is off. Results remain a snapshot of that calculation until you press **Calculate** again. A stale-cache notice means the result is not current; pattern filters exclude that stale result.
 
 ### Full Proxy: does the client go to the exchange itself
 
@@ -74,11 +85,15 @@ For fast strategies — `MoonShot` with a short corridor, `MoonStrike`, `Drops` 
 
 Moon Streamer (`Menu → Moon Streamer`, a PRO module activated for Moon Credits) is accelerated chart transmission from a server in Tokyo to the home computer for when, because of exchange lags, trades disappear from the local chart. It is needed for **manual** trading on a local machine. On a trading VDS with autotrading it is not required and, by the site's warning, may interfere with the terminal's operation.
 
+The menu checkbox is the reception switch. On the Windows build labeled 7.73 N1 a connected MoonProto client can set that same switch. The core saves it and keeps running. The value reported back is the saved switch: on, off, or unknown when the core does not report one. Unknown is its own reading. Whether Tokyo is actually connected is a separate fact, and this value does not carry it. Setting the switch to the value it already has asks the core to send the current value again. An older core ignores the request, and the menu checkbox remains the control. The request leaves the stream server and its address as they are. With **Full Proxy** the chart trades already come from the kernel, so this switch leaves that feed as it is.
+
 ### Linux: two different routes
 
 The site publishes **Moonbot for Linux** — a self-contained container with the Windows version of the terminal under Wine. It needs a graphical desktop environment; Debian 12 is recommended (Ubuntu 20.04–24.04 and RHEL 9-based systems are also verified). This is a way to run the **ordinary windowed terminal** on a Linux machine. An important limitation from the same page: new versions of the bot do not work under Wine, it must not be updated there, and after an accidental update — roll back with the `./MoonBot -R` command.
 
-The second route is the **native windowless kernel for Linux**: Moonbot runs as a systemd service, always in VDS mode, controlled through MoonProto from Moonbot for Windows or MoonTerminal. The verified system is Ubuntu 24.04 x86-64; no graphical shell is needed. In Moonbot 7.73, **Menu → VPS setup** installs the full Linux release and transfers the selected bot's settings. Manual installation is also available. MoonTerminal's current installation wizard still uses the latest test build; it can connect to an already installed release kernel by key. See [Download and install the Linux kernel](../reference/linux-installation.md) for release availability, installation steps and the handover checks.
+The second route is the **native windowless kernel for Linux**: a systemd service controlled through MoonProto from Moonbot for Windows or MoonTerminal. The verified system is Ubuntu 24.04 x86-64; no graphical desktop is needed on the server.
+
+Moonbot **Menu → VPS setup** and the **MoonTerminal v0.69.2** wizard install the full Linux release. MoonTerminal can also create a core with demo settings and help connect an existing core by key. Its wizard offers to disable password SSH after checking key access and prepares swap on a small server when needed. See [Download and install the Linux kernel](../reference/linux-installation.md) for the steps, prerequisites and handover checks.
 
 ---
 
